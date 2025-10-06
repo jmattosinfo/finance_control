@@ -1,0 +1,34 @@
+{% extends "finance/base.html" %}
+{% block title %}Nova Transação{% endblock %}
+{% block content %}
+
+<!DOCTYPE html> 
+<html lang="pt-BR">
+
+<h2 class="mb-4">Adicionar Nova Transação</h2>
+<form method="post" class="row g-3">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+    </div>
+</form>
+</html>
+
+{% endblock %}
+
+{% comment %} <head>
+  <meta charset="UTF-8">
+  <title>Nova Transação</title>
+</head>
+<body>
+  <h2>Nova Transação</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+  </form>
+</body>
+
+</html> {% endcomment %}

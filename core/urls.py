@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from finance import views
+from finance import views # Importa as views do aplicativo finance. Isso permite que você use as funções definidas em finance/views.py para lidar com as requisições.
+from . import views # Importa as views do próprio aplicativo. O . indica que o módulo está no mesmo diretório.
 
 urlpatterns = [
     path('admin/', admin.site.urls), # Rota para o painel de administração
     path('', views.home, name='home'), # Rota para a página inicial
+    path("", views.listar_transacoes, name="listar_transacoes"),
+    path("nova/", views.nova_transacao, name="nova_transacao"),
+    path("home/", views.home, name="home"),
 ]
