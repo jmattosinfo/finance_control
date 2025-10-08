@@ -5,8 +5,14 @@ from django.shortcuts import render
 
 from django.shortcuts import redirect
 
+#ajustar home para exibir transações
 def home(request):
-    return render(request, "home.html")
+    Transacao.objects.all()
+    
+    return render(request, "finance/home.html", {"transacoes": Transacao}) #ajustar para exibir transações
+
+def sobre(request): #request é o objeto que contém todas as informações sobre a requisição HTTP feita pelo cliente
+    return render(request, "finance/sobre.html") #o render substitui o HttpResponse, facilitando a renderização de templates
 
 def listar_transacoes(request):
     return render(request, "listar_transacoes.html")

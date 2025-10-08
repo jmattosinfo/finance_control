@@ -25,4 +25,5 @@ urlpatterns = [
     path("", views.listar_transacoes, name="listar_transacoes"),
     path("nova/", views.nova_transacao, name="nova_transacao"),
     path("home/", views.home, name="home"),
+    path("sobre/", views.sobre, name="sobre"), # Rota para a página sobre
 ]
