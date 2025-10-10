@@ -1,8 +1,9 @@
 from django.http import HttpResponse
+from django.contrib import messages
 from finance.models import Transacao
 #from .models import Transacao
 from finance.forms import TransacaoForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.shortcuts import redirect
 
@@ -28,6 +29,13 @@ def home(request):
         "total_despesas": total_despesas,
         "saldo": saldo        
         }) #ajustar para exibir transações, entradas, despesas e saldo
+
+#nova view para excluir transação
+def excluir_transacao(request, transacao_id):
+    transacao = get_object_or_404(Transacao, id=transacao_id)
+    transacao.delete()
+    messages.success(request, f"Transação '{transacao.descricao}' excluída com sucesso.") #mensagem de sucesso após excluir a transação
+    return redirect('home') #redireciona para a página inicial após excluir a transação
 
 def sobre(request): #request é o objeto que contém todas as informações sobre a requisição HTTP feita pelo cliente
     return render(request, "finance/sobre.html") #o render substitui o HttpResponse, facilitando a renderização de templates
