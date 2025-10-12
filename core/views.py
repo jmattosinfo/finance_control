@@ -9,28 +9,41 @@ from django.shortcuts import redirect
 
 #ajustar home para exibir transações
 def home(request):
-    transacao = Transacao.objects.all().order_by('-data') #ordena da data mais recente para a mais antiga
+    transacoes = Transacao.objects.all().order_by('-data') #ordena da data mais recente para a mais antiga
     
     total_entradas = sum(
-        t.valor for t in transacao 
+        t.valor for t in transacoes 
         if t.categoria.lower() == 'receita'
         )
     
     total_despesas = sum(
-        t.valor for t in transacao 
+        t.valor for t in transacoes 
         if t.categoria.lower() == 'despesa'
         )
     
     saldo = total_entradas - total_despesas
+     #nova funcionalidade para editar transação
+    if request.method == "POST" and "transacao_id" in request.POST:
+        transacao_id = request.POST.get("transacao_id")
+        transacao_obj = get_object_or_404(Transacao, id=transacao_id)
+        form = TransacaoForm(request.POST, instance=transacao_obj)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
     
-    return render(request, "finance/home.html", {
-        "transacao": transacao,
+    context = {
+        "transac": transacoes,
         "total_entradas": total_entradas,
         "total_despesas": total_despesas,
-        "saldo": saldo        
-        }) #ajustar para exibir transações, entradas, despesas e saldo
+        "saldo": saldo,
+        "form": TransacaoForm() #formulario vazio para o modal
+    } #ajustar para exibir transações, entradas, despesas e saldo
+
+    return render(request, "finance/home.html", context)    
 
 #nova view para excluir transação
+
+
 def excluir_transacao(request, transacao_id):
     transacao = get_object_or_404(Transacao, id=transacao_id)
     transacao.delete()

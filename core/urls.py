@@ -27,4 +27,5 @@ urlpatterns = [
     path("home/", views.home, name="home"),
     path("sobre/", views.sobre, name="sobre"), # Rota para a página sobre
     path("excluir/<int:transacao_id>/", views.excluir_transacao, name="excluir_transacao"), # Rota para excluir uma transação pelo ID
+    #path("editar/<int:transacao_id>/", views.editar_transacao, name="editar_transacao"), # Rota para editar uma transação pelo ID
 ]
