@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main():
+def main(): #função principal que executa tarefas administrativas do Django:
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
     try:

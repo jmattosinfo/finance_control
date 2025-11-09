@@ -1,110 +1,262 @@
 {% load static %}
+
+{% load tz %}
+{% now "d/m/Y H:i:s" as now %}
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <title>Controle Mensal {{ mes }}/{{ ano }}</title>
+    <title>Controle Mensal - {{ mes_nome }} {{ ano }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <body>
+  <body class="bg-light">
     <div class="container mt-4">
+      <!-- Navegação de meses -->
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{% url 'mes_atual' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary">⬅️ Mês anterior</a>
-        <h1>Controle Mensal - {{ mes }}/{{ ano }}</h1>
-        <a href="{% url 'mes_atual' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary">Próximo mês ➡️</a>
+        <a href="{% url 'mes_navegar' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary btn-lg">⬅️ {{ mes_anterior_nome }}</a>
+
+        <h1>Controle Mensal - {{ mes_nome }} {{ ano }}</h1>
+
+          <a href="{% url 'mes_navegar' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary btn-lg">{{ mes_proximo_nome }} ➡️</a>
       </div>
 
-      <h1>Controle Mensal - {{ mes }}/{{ ano }}</h1>
+      <!-- Totais do mês com previsões -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card shadow">
+            <div class="card-body text-center">
+              <h5 class="card-title text-success">Entradas</h5>
+              <p class="fs-4">
+                R$ {{ total_entradas }} <small class="text-muted">(Previsto: {{ total_prev_entradas }})</small>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow">
+            <div class="card-body text-center">
+              <h5 class="card-title text-danger">Saídas</h5>
+              <p class="fs-4">
+                R$ {{ total_saidas }} <small class="text-muted">(Previsto: {{ total_prev_saidas }})</small>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info">Guardar</h5>
+              <p class="fs-4">
+                R$ {{ total_guardar }} <small class="text-muted">(Previsto: {{ total_prev_guardar }})</small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h3>Totais do mês</h3>
-      <ul>
-        <li>Entradas: {{ total_entradas }} (Previsto: {{ total_prev_entradas }})</li>
-        <li>Saídas: {{ total_saidas }} (Previsto: {{ total_prev_saidas }})</li>
-        <li>Guardar: {{ total_guardar }} (Previsto: {{ total_prev_guardar }})</li>
-      </ul>
+      <!-- Botão para gráfico -->
+      <div class="text-end mb-3">
+        <a href="{% url 'grafico_mes' ano=ano mes=mes %}" class="btn btn-primary">📊 Ver Gráfico</a>
+        
+      </div>
+    
+      <!-- Tabela de transações -->
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <div class = "d-flex justify-content-center mb-3">
+            <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modalNovaTransacao">+ Nova Transação</button>
+          </div>
 
-      <h3>Transações realizadas</h3>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Categoria</th>
-            <th>Valor</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for t in transacoes %}
-            <tr>
-              <td>{{ t.data }}</td>
-              <td>{{ t.descricao }}</td>
-              <td>{{ t.categoria }}</td>
-              <td>{{ t.valor }}</td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="4">Nenhuma transação neste mês</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          <h4 class="mb-3">📋 Transações</h4> 
+          
+          
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in transacoes %}
+                <tr>
+                  <td>{{ t.data }}</td>
+                  <td>{{ t.descricao }}</td>
+                  <td>{{ t.get_categoria_display }}</td>
+                  <td>R$ {{ t.valor|floatformat:2 }}</td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-warning" onclick="abrirModalEditar({{ t.id }}, '{{ t.descricao }}', {{ t.valor }}, '{{ t.data }}', '{{ t.categoria }}', {{ t.pago|yesno:'true,false' }})">✏️</button>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalExcluir({{ t.id }}, '{{ t.descricao }}')">🗑️</button>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted">Nenhuma transação neste mês</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      <h3>Previsões do mês</h3>
-      <table class="table table-light">
-        <thead>
-          <tr>
-            <th>Descrição</th>
-            <th>Categoria</th>
-            <th>Valor Previsto</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for p in previsoes %}
-            <tr>
-              <td>{{ p.descricao }}</td>
-              <td>{{ p.categoria }}</td>
-              <td>{{ p.valor_previsto }}</td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="3">Nenhuma previsão para este mês</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <h3>Comparativo Gráfico</h3>
-      <canvas id="graficoMes" width="400" height="200"></canvas>
+      <!-- Tabela de previsões -->
+      <div class="card shadow mb-4">
+        <div class="card-body">
+          <h4 class="mb-3">🔮 Previsões</h4>
+          <table class="table table-light">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Valor Previsto</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in previsoes %}
+                <tr>
+                  <td>{{ p.descricao }}</td>
+                  <td>{{ p.get_categoria_display }}</td>
+                  <td>R$ {{ p.valor_previsto|floatformat:2 }}</td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center text-muted">Nenhuma previsão neste mês</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
+    <!-- Modal Nova Transação -->
+  <div class="modal fade" id="modalNovaTransacao" tabindex="-1" aria-labelledby="modalNovaTransacaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'nova_transacao' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNovaTransacaoLabel">Nova Transação</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Descrição</label>
+              <input type="text" name="descricao" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Valor</label>
+              <input type="number" step="0.01" name="valor" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Data</label>
+              <input type="date" name="data" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label>Categoria</label>
+              <select name="categoria" class="form-select" required>
+                <option value="receita">Receita</option>
+                <option value="despesa">Despesa</option>
+              </select>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" name="pago" class="form-check-input" id="pagoNova" />
+              <label class="form-check-label" for="pagoNova">Pago?</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Modal Único de Edição -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" id="formEditar">
+            {% csrf_token %}
+            <input type="hidden" name="transacao_id" id="editar_id" />
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Transação</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label>Descrição</label>
+                <input type="text" name="descricao" class="form-control" id="editar_descricao" required />
+              </div>
+              <div class="mb-3">
+                <label>Valor</label>
+                <input type="number" step="0.01" name="valor" class="form-control" id="editar_valor" required />
+              </div>
+              <div class="mb-3">
+                <label>Data</label>
+                <input type="date" name="data" class="form-control" id="editar_data" required />
+              </div>
+              <div class="mb-3">
+                <label>Categoria</label>
+                <select name="categoria" class="form-select" id="editar_categoria" required>
+                  <option value="receita" {% if transacao.categoria == 'receita' %}selected{% endif %}>Receita</option>
+                  <option value="despesa" {% if transacao.categoria == 'despesa' %}selected{% endif %}>Despesa</option>
+                </select>
+              </div>
+              <div class="form-check mb-3">
+                <input type="checkbox" name="pago" class="form-check-input" id="editar_pago" />
+                <label class="form-check-label" for="editar_pago">Pago?</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Único de Exclusão -->
+    <div class="modal fade" id="modalExcluir" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar Exclusão</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" id="corpoExcluir"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <a href="#" class="btn btn-danger" id="btnConfirmarExcluir">Excluir</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-const ctx = document.getElementById('graficoMes').getContext('2d');
-const graficoMes = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Receitas', 'Despesas', 'Guardar'],
-        datasets: [
-            {
-                label: 'Realizado',
-                data: [{{ total_entradas }}, {{ total_saidas }}, {{ total_guardar }}],
-                backgroundColor: 'rgba(54, 162, 235, 0.5)'
-            },
-            {
-                label: 'Previsto',
-                data: [{{ total_prev_entradas }}, {{ total_prev_saidas }}, {{ total_prev_guardar }}],
-                backgroundColor: 'rgba(255, 99, 132, 0.5)'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Comparativo Previsão x Realizado' }
-        }
-    }
-});
-</script>
+      function abrirModalEditar(id, descricao, valor, data, categoria, pago) {
+        document.getElementById('editar_id').value = id
+        document.getElementById('editar_descricao').value = descricao
+        document.getElementById('editar_valor').value = valor
+        document.getElementById('editar_data').value = data
+        document.getElementById('editar_categoria').value = categoria
+        document.getElementById('editar_pago').checked = pago
+        new bootstrap.Modal(document.getElementById('modalEditar')).show()
+      }
+      
+      function abrirModalExcluir(id, descricao) {
+        document.getElementById('corpoExcluir').innerHTML = `Tem certeza que deseja excluir a transação "<strong>${descricao}</strong>"?`
+        document.getElementById('btnConfirmarExcluir').href = `/excluir/${id}/`
+        new bootstrap.Modal(document.getElementById('modalExcluir')).show()
+      }
+    </script>
   </body>
 </html>

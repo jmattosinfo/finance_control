@@ -1,0 +1,215 @@
+1️⃣ Estrutura do projeto Django (nível “core”)
+2️⃣ Estrutura dos aplicativos (apps) — como o teu app finance
+
+🧱 1️⃣ Nível do PROJETO (geral — “core”)
+
+Ao criar o projeto com django-admin startproject finance_control, automaticamente cria-se uma estrutura, como no caso:
+
+Finance_control/
+│
+├── manage.py
+├── core/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+└── finance/
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── models.py
+    ├── views.py
+    ├── urls.py
+    ├── templates/
+    └── ...
+
+
+Explicando:
+
+⚙️ manage.py
+
+👉 É o comando principal do Django.
+
+É com ele que tu executa o servidor local (python manage.py runserver)
+
+Também cria apps, faz migrações (makemigrations, migrate)
+
+Basicamente, ele conecta tua linha de comando ao Django.
+
+🧩 core/settings.py
+
+👉 É o coração da configuração do teu projeto.
+
+Funções:
+
+Define qual app está instalado (INSTALLED_APPS)
+
+Configura o banco de dados
+
+Configura os diretórios de templates e arquivos estáticos
+
+Define idioma, fuso horário e segurança
+
+Exemplo:
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'finance',  # teu app
+]
+
+🌐 core/urls.py
+
+👉 É o roteador principal do projeto.
+
+Função:
+
+Liga URLs principais aos apps (como finance)
+
+Pode também conter rotas diretas (como o /admin)
+
+Exemplo:
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('finance.urls')),  # envia tudo do app finance
+]
+
+
+Então, tudo que tu digitar no navegador vai passar primeiro por esse arquivo.
+👉 Ele é o arquivo que comanda o que aparece no navegador — junto com as views, claro.
+
+🕸️ core/wsgi.py e core/asgi.py
+
+👉 São arquivos técnicos para o servidor web.
+
+wsgi.py → usado em servidores tradicionais (Gunicorn, Apache)
+
+asgi.py → usado para conexões assíncronas (WebSockets, etc.)
+
+Tu quase nunca mexe neles em desenvolvimento local.
+
+💰 2️⃣ Nível do APLICATIVO (ex: finance/)
+
+Esse é o app que contém as funcionalidades específicas — transações, lançamentos etc.
+
+📜 finance/models.py
+
+👉 Define as tabelas do banco de dados (modelo de dados).
+
+Exemplo:
+
+from django.db import models
+
+class Transacao(models.Model):
+    descricao = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    data = models.DateField()
+
+
+Cada classe = 1 tabela no banco.
+
+🧠 finance/views.py
+
+👉 Aqui ficam as funções (ou classes) que processam os dados e decidem o que mostrar no navegador.
+
+Exemplo:
+
+from django.shortcuts import render
+from .models import Transacao
+
+def listar_transacoes(request):
+    transacoes = Transacao.objects.all()
+    return render(request, 'finance/listar.html', {'transacoes': transacoes})
+
+
+Essa função:
+
+Recebe o request (pedido do navegador)
+
+Busca os dados no banco (Transacao.objects.all())
+
+Envia esses dados pro template HTML
+
+🚦 finance/urls.py
+
+👉 Define as rotas do app — ou seja, qual view responde a qual URL.
+
+Exemplo:
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.listar_transacoes, name='listar_transacoes'),
+    path('nova/', views.nova_transacao, name='nova_transacao'),
+    path('excluir/<int:id>/', views.excluir_transacao, name='excluir_transacao'),
+]
+
+
+Assim, quando tu acessa:
+
+/ → lista as transações
+
+/nova/ → abre o formulário pra nova
+
+/excluir/3/ → exclui a transação com ID 3
+
+🧱 finance/templates/
+
+👉 Onde ficam os arquivos HTML (as páginas).
+
+Exemplo: templates/finance/listar.html
+
+<h1>Minhas transações</h1>
+<ul>
+  {% for t in transacoes %}
+    <li>{{ t.descricao }} - R$ {{ t.valor }}</li>
+  {% endfor %}
+</ul>
+
+
+Esses arquivos são renderizados pelas views com render().
+
+🔧 finance/admin.py
+
+👉 Configura o que aparece no painel admin do Django.
+
+Exemplo:
+
+from django.contrib import admin
+from .models import Transacao
+
+admin.site.register(Transacao)
+
+
+Assim a tabela “Transacao” aparece no admin.
+
+🧩 finance/apps.py
+
+👉 Arquivo de configuração do app.
+Normalmente, tu não precisa alterar.
+
+__init__.py
+
+👉 Apenas indica que o diretório é um módulo Python.
+
+⚙️ Resumo Rápido
+Arquivo	Função principal
+manage.py	Comandos do Django
+core/settings.py	Configurações globais
+core/urls.py	Roteamento geral (liga apps)
+finance/models.py	Tabelas do banco
+finance/views.py	Lógica e processamento
+finance/urls.py	URLs específicas do app
+finance/templates/	HTML das páginas
+finance/admin.py	Painel administrativo
