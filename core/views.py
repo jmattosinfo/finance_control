@@ -6,8 +6,14 @@ from finance.forms import TransacaoForm
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date
 from calendar import month_name
-
+from django.contrib.auth import views as auth_views #para autenticação
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from finance.forms import CadastroForm
+
 
 def teste_context_processor(request):
     return render(request, "finance/teste_context.html")
@@ -80,15 +86,54 @@ def nova_transacao(request): # Função para lidar com a criação de uma nova t
     if request.method == 'POST': # Verifica se o formulário foi enviado via POST
         form = TransacaoForm(request.POST)
         if form.is_valid():
-            form.save()
+            Transacao = form.save(commit=False)
+            Transacao.user = request.user  # Atribui o usuário atual à transação
+            Transacao.save()
+            messages.success(request, 'Transação adicionada com sucesso!')
             return redirect('mes_atual') # Redireciona para a página inicial toda vez que uma nova transação é criada
     else:
         form = TransacaoForm()
         
     return render(request, 'finance/nova_transacao.html', {'form': form})
 
-from calendar import month_name
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username'] # isso faz com que o sistema pegue o username e a senha do formulário de login
+        #email = request.POST['email']
+        password = request.POST['password'] 
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('mes_atual')
+        else:
+            
+            messages.error(request, 'Credenciais inválidas. Por favor, tente novamente.')
+            
+    return render(request, 'finance/login.html')
 
+def cadastro_view(request):
+    if request.method == 'POST':
+        form = CadastroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('mes_atual')
+        else:
+            messages.error(request, 'Credenciais inválidas. Por favor, tente novamente.')
+    else:
+        form = CadastroForm()  # ← Aqui cria o form quando for apenas abrir a página
+
+    return render(request, 'finance/cadastro.html', {'form': form})
+
+
+def logout_view(request):
+    
+    logout(request)
+    return redirect('login')
+
+@login_required
 def mes_atual(request, ano=None, mes=None):
     from datetime import date
     from datetime import datetime
@@ -122,18 +167,28 @@ def mes_atual(request, ano=None, mes=None):
 
 
     # filtra transações, calcula totais etc.
-    transacoes = Transacao.objects.filter(data__year=ano, data__month=mes)
+    transacoes = Transacao.objects.filter(
+        user = request.user,
+        data__year=ano, 
+        data__month=mes
+        )
+    
     total_entradas = sum(t.valor for t in transacoes if t.categoria == 'receita')
     total_saidas = sum(t.valor for t in transacoes if t.categoria == 'despesa')
     total_guardar = total_entradas - total_saidas
     
     
     if request.method == "POST" and "transacao_id" in request.POST:
+        
         transacao_id = request.POST.get("transacao_id")
-        transacao_obj = get_object_or_404(Transacao, id=transacao_id)
+        transacao_obj = get_object_or_404(Transacao, id=transacao_id, User=request.user)
         form = TransacaoForm(request.POST, instance=transacao_obj)
+        
         if form.is_valid():
-            form.save()
+            
+            transacao = form.save(commit=False)
+            transacao.user = request.user
+            transacao.save()
             messages.success(request, "Transação atualizada com sucesso!")
             return redirect("mes_atual")  # redireciona pra o mês atual
 
@@ -163,11 +218,10 @@ def mes_atual_padrao(request):
 
 
 def grafico_mes(request, ano, mes):
-    # aqui você pode passar os mesmos dados do mes_atual para o gráfico
+    # Redireciona para a página do gráfico e passa o  mesmos dados do mes_atual para o gráfico
     context = {
         "ano": ano,
         "mes": mes,
-        # se quiser, pode passar totais ou transações
     }
     return render(request, "finance/grafico_mes.html", context)
 

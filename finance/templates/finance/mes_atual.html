@@ -1,7 +1,10 @@
+
 {% load static %}
 
 {% load tz %}
 {% now "d/m/Y H:i:s" as now %}
+
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -12,6 +15,12 @@
   </head>
   <body class="bg-light">
     <div class="container mt-4">
+
+        <div class="d-flex align-items-center mb-3">
+          <span>Olá, {{ user.username }}!</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Sair</a>
+        </div>
+
       <!-- Navegação de meses -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="{% url 'mes_navegar' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary btn-lg">⬅️ {{ mes_anterior_nome }}</a>

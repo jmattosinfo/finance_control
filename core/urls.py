@@ -1,15 +1,27 @@
 from django.contrib import admin
 from django.urls import path
 from core import views  # importa tudo do core/views.py
+from django.contrib.auth import views as auth_views #para autenticação
+from core import views as core_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # principais
     path('', views.mes_atual, name='mes_atual'),
-    #path('home/', views.mes_atual, name='home_redirect'),
     path('sobre/', views.sobre, name='sobre'),
-
+    
+    
+    
+    # autenticação
+    path("login/", core_views.login_view, name="login"),
+    path('logout/', views.logout_view, name='logout'),
+    path('login/', auth_views.LoginView.as_view(template_name='finance/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path("cadastro/", views.cadastro_view, name="cadastro"),
+    
+    
     
     # transações
     path('nova/', views.nova_transacao, name='nova_transacao'),
