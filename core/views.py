@@ -12,7 +12,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 from finance.forms import CadastroForm
+from finance.forms import EditarContaForm
+from django.contrib.auth import update_session_auth_hash
+
 
 
 def teste_context_processor(request):
@@ -133,6 +137,54 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+
+@login_required
+def excluir_conta(request):
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, 'Sua conta foi excluída com sucesso.')
+        return redirect('cadastro')
+    return render(request, 'finance/excluir_conta.html')
+
+
+# EDITAR CONTA
+@login_required
+def editar_conta(request):
+    
+    user = request.user # pega o usuário logado atualmente
+    
+    if request.method == "POST":
+        form = EditarContaForm(user, request.POST)
+
+        if form.is_valid():
+
+            # Atualiza nome e email
+            user.username = form.cleaned_data['username']
+            user.email = form.cleaned_data['email']
+            user.save()
+
+            # Atualiza senha, se informada
+            if form.cleaned_data.get('new_password1'):
+                form.save()
+                update_session_auth_hash(request, user)
+
+            messages.success(request, "Conta atualizada com sucesso!")
+            return redirect("editar_conta")
+
+    else:
+        form = EditarContaForm(user)
+
+    return render(request, "finance/editar_conta.html", {"form": form})
+
+# LISTAR USUÁRIOS
+@user_passes_test(lambda u: u.is_superuser) # faz com que apenas administradores possam acessar essa view
+def listar_usuarios(request):
+    usuarios = User.objects.all()
+    return render(request, 'finance/listar_usuarios.html', {'usuarios': usuarios})
+
 @login_required
 def mes_atual(request, ano=None, mes=None):
     from datetime import date
@@ -181,7 +233,7 @@ def mes_atual(request, ano=None, mes=None):
     if request.method == "POST" and "transacao_id" in request.POST:
         
         transacao_id = request.POST.get("transacao_id")
-        transacao_obj = get_object_or_404(Transacao, id=transacao_id, User=request.user)
+        transacao_obj = get_object_or_404(Transacao, id=transacao_id, user=request.user)
         form = TransacaoForm(request.POST, instance=transacao_obj)
         
         if form.is_valid():

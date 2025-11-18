@@ -1,3 +1,25 @@
+Modelo do projeto:
+
+Tela para autenticação: 
+- login
+- cadastro (nome, email, senha)
+
+Opção para:
+- Recuperar senha (todos)
+- Gerenciar conta (alterar senha, mudar nick, todos)
+- Excluir conta (todos)
+- Gerenciar users (admin)
+
+Dentro do app:
+-Planilha para gerenciar transações (descricao, valor, data (vencimento - alerta!), categoria (receita/despesa))
+
+-Botão: excluir transação, 
+--editar transação, 
+--navegação entre os meses (histórico)
+--Cadastrar cartões de crédito (limites, gastos...)
+-Previsões - mostrar proximos gastos
+-Ver gráficos
+
 1️⃣ Estrutura do projeto Django (nível “core”)
 2️⃣ Estrutura dos aplicativos (apps) — como o teu app finance
 

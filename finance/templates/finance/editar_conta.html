@@ -1,0 +1,87 @@
+{% extends "finance/base.html" %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <h3 class="text-center mb-4">Editar Minha Conta</h3>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Usuário -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Usuário</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-danger small">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="text-danger small">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <hr class="my-4">
+
+                <h5 class="text-center mb-3">Alterar Senha (opcional)</h5>
+
+                <!-- Senha Atual -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Senha Atual</label>
+                    {{ form.old_password }}
+                    {% if form.old_password.errors %}
+                        <div class="text-danger small">{{ form.old_password.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Nova Senha -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nova Senha</label>
+                    {{ form.new_password1 }}
+                    {% if form.new_password1.errors %}
+                        <div class="text-danger small">{{ form.new_password1.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmar Nova Senha -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Confirmar Nova Senha</label>
+                    {{ form.new_password2 }}
+                    {% if form.new_password2.errors %}
+                        <div class="text-danger small">{{ form.new_password2.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 mt-3 py-2">
+                    Salvar Alterações
+                </button>
+
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'mes_atual' %}" class="btn btn-outline-secondary w-100 py-2">
+                    Voltar
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

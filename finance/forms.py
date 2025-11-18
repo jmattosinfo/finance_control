@@ -2,6 +2,7 @@ from django import forms
 from .models import Transacao # Importa o modelo Transacao para criar um formulário baseado nele
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
 
 class TransacaoForm(forms.ModelForm):
     class Meta:
@@ -16,39 +17,75 @@ class TransacaoForm(forms.ModelForm):
         }
 class CadastroForm(UserCreationForm):
         
-        # email = forms.EmailField(
-        #     required=True, 
-        #     widget=forms.EmailInput(
-        #         attrs={                  
-        #             'placeholder': 'Email'
-        #                }
-        #         )
-        # )
+        email = forms.EmailField(
+            required=True, 
+           widget=forms.EmailInput(
+               attrs={                  
+                    'placeholder': 'Email'
+                      }
+                )
+            )
             
-    class Meta: #class Meta define metadados para o formulário, fazendo a ligação com o modelo User do Django.
+class Meta: #class Meta define metadados para o formulário, fazendo a ligação com o modelo User do Django.
             model = User
             fields = ['username', 'password1', 'password2']
             
             help_texts = {
             'username': None,
-            # 'email': None,
+            'email': None,
             'password1': None,
             'password2': None,
         }
         
-            
-
-               
-    def __init__(self, *args, **kwargs):
-        super(CadastroForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'form-control'}) #adiciona a classe CSS 'form-control' a todos os campos do formulário
+            def __init__(self, *args, **kwargs):
+                super(CadastroForm, self).__init__(*args, **kwargs)
+                for field_name, field in self.fields.items():
+                    field.widget.attrs.update({'class': 'form-control'}) #adiciona a classe CSS 'form-control' a todos os campos do formulário
                 
 
                 
-            self.fields['username'].widget.attrs['placeholder'] = 'Nome de usuário'
-            self.fields['password1'].widget.attrs['placeholder'] = 'Crie uma senha'
-            self.fields['password2'].widget.attrs['placeholder'] = 'Confirme a senha'
+                    self.fields['username'].widget.attrs['placeholder'] = 'Nome de usuário'
+                    self.fields['password1'].widget.attrs['placeholder'] = 'Crie uma senha'
+                    self.fields['password2'].widget.attrs['placeholder'] = 'Confirme a senha'
             
         
+class EditarContaForm(PasswordChangeForm):
+    username = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Nome de usuário'
+        })
+    )
+
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Email'
+        })
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'email',
+            'old_password',
+            'new_password1',
+            'new_password2'
+        ]
+
+    def __init__(self, user, *args, **kwargs):
         
+
+        # Importante: passa "user" como primeiro argumento para o PasswordChangeForm
+        super().__init__(user, *args, **kwargs)
+
+        # Preenche username/email
+        self.fields['username'].initial = user.username
+        self.fields['email'].initial = user.email
+
+        # Aplica classes CSS
+        for field in ['old_password', 'new_password1', 'new_password2']:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

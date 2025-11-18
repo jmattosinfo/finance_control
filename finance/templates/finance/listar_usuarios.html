@@ -1,0 +1,6 @@
+<h2>Usuários cadastrados</h2>
+<ul>
+    {% for usuario in usuarios %}
+        <li>{{ usuario.username }} - {{ usuario.email }}</li>
+    {% endfor %}
+</ul>
