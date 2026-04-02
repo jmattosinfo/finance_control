@@ -14,6 +14,7 @@ O projeto permite controle de receitas, despesas e organização financeira pess
 - SQLite3
 - HTML5
 - CSS3
+- JavaScript
 
 ---
 
