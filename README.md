@@ -6,6 +6,9 @@ O projeto permite controle de receitas, despesas e organização financeira pess
 
 ---
 
+## Status do Projeto
+Versão inicial funcional com CRUD completo de receitas e despesas. Projeto em evolução para inclusão de autenticação e API REST.
+
 ## Tecnologias Utilizadas
 
 - Python 3
@@ -35,7 +38,6 @@ FINANCE_CONTROL/
 │ ├── templates/
 │ └── static/
 │
-├── db.sqlite3
 ├── manage.py
 └── README.md
 
