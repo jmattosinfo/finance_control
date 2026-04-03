@@ -61,8 +61,6 @@ git clone https://github.com/seu-usuario/finance-control.git
 
 
 ### 2️ Acesse a pasta do projeto
-
-
 cd FINANCE_CONTROL
 
 
@@ -71,7 +69,7 @@ python -m venv venv
 venv\Scripts\activate # Windows
 
 ### 4️ Instale as dependências
-pip install django
+pip install -r requirements.txt
 
 ### 5️ Execute as migrações
 python manage.py migrate
@@ -88,7 +86,7 @@ Acesse no navegador: http://127.0.0.1:8000/
 Este projeto foi desenvolvido com foco em:
 
 - Aprendizado prático de Django
-- Estruturação de aplicações MVC
+- Estruturação de aplicações seguindo o padrão MTV do Django
 - Organização de apps e templates
 - Boas práticas de desenvolvimento web
 
