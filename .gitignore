@@ -1,6 +1,23 @@
-Estrutura.txt
+# Ambiente virtual
 venv/
+.env
+
+# Cache Python
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Banco local
 db.sqlite3
+
+# Arquivos estáticos coletados
 staticfiles/
+
+# Arquivos pessoais
+Estrutura.txt
+
+# VS Code
+.vscode/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
