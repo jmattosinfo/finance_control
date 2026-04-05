@@ -9,6 +9,7 @@ O projeto permite controle de receitas, despesas e organização financeira pess
 ## Status do Projeto
 Versão inicial funcional com CRUD completo de receitas e despesas. Projeto em evolução para inclusão de autenticação e API REST.
 
+
 ## Tecnologias Utilizadas
 
 - Python 3
@@ -51,6 +52,22 @@ FINANCE_CONTROL/
 - Interface responsiva com Bootstrap
 - Organização por categorias
 - Integração com Django Admin
+
+---
+
+## Screenshots
+
+### Tela de Login
+![Tela de Login](assets/images/login.png)
+
+### Cadastro de Usuários
+![Dashboard](assets/images/cadastre-se.png)
+
+### Dashboard
+![Dashboard](assets/images/dash.png)
+
+### Cadastro de Lançamentos
+![Dashboard](assets/images/addItem.png)
 
 ---
 
