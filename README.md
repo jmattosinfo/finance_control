@@ -7,7 +7,7 @@ O projeto permite controle de receitas, despesas e organização financeira pess
 ---
 
 ## Status do Projeto
-Versão inicial funcional com CRUD completo de receitas e despesas. Projeto em evolução para inclusão de autenticação e API REST.
+Versão inicial funcional com CRUD completo de receitas e despesas. 🔄 Projeto em evolução — novas funcionalidades estão sendo implementadas continuamente.
 
 
 ## Tecnologias Utilizadas
@@ -54,6 +54,12 @@ FINANCE_CONTROL/
 - Integração com Django Admin
 
 ---
+## Arquitetura
+
+ O projeto segue a arquitetura MTV (Model-Template-View) do Django, 
+ com separação clara entre regras de negócio, camada de apresentação e configuração do sistema.
+
+---
 
 ## Screenshots
 
@@ -61,20 +67,20 @@ FINANCE_CONTROL/
 ![Tela de Login](assets/images/login.png)
 
 ### Cadastro de Usuários
-![Dashboard](assets/images/cadastre-se.png)
+![Cadastro de Usuários](assets/images/cadastre-se.png)
 
 ### Dashboard
 ![Dashboard](assets/images/dash.png)
 
 ### Cadastro de Lançamentos
-![Dashboard](assets/images/addItem.png)
+![Cadastro de Lançamentos](assets/images/addItem.png)
 
 ---
 
 ## Como Executar o Projeto
 
 ### 1 Clone o repositório
-git clone https://github.com/seu-usuario/finance-control.git
+git clone https://github.com/jmattosinfo/finance-control.git
 
 
 ### 2️ Acesse a pasta do projeto
