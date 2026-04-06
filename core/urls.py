@@ -11,8 +11,7 @@ urlpatterns = [
     # principais
     path('', views.mes_atual, name='mes_atual'),
     path('sobre/', views.sobre, name='sobre'),
-    
-    
+      
     
     # autenticação
     path("login/", core_views.login_view, name="login"),
@@ -31,9 +30,8 @@ urlpatterns = [
     path('editar_conta/', views.editar_conta, name='editar_conta'),
     path('excluir_conta/', views.excluir_conta, name='excluir_conta'),
     path('usuarios/', views.listar_usuarios, name='listar_usuarios'),
-    
-    
-    
+
+
     # transações
     path('nova/', views.nova_transacao, name='nova_transacao'),
     path('transacoes/', views.listar_transacoes, name='listar_transacoes'),
@@ -41,12 +39,10 @@ urlpatterns = [
     path('editar/<int:transacao_id>/', views.editar_transacao, name='editar_transacao'),
     
 
-
     # meses
     path('mes/<int:ano>/<int:mes>/', views.mes_atual, name='mes_navegar'),
     #path('mes/', views.mes_atual_padrao, name='mes_atual_padrao'),
     path('grafico/<int:ano>/<int:mes>/', views.grafico_mes, name='grafico_mes'),
-    
     
     path('teste-context/', views.teste_context_processor, name='teste_context'),
 

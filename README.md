@@ -7,7 +7,7 @@ O projeto permite controle de receitas, despesas e organização financeira pess
 ---
 
 ## Status do Projeto
-Versão inicial funcional com CRUD completo de receitas e despesas. 🔄 Projeto em evolução — novas funcionalidades estão sendo implementadas continuamente.
+Versão inicial funcional com CRUD completo de receitas e despesas. Projeto em evolução — novas funcionalidades estão sendo implementadas continuamente.
 
 
 ## Tecnologias Utilizadas

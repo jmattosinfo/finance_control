@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import user_passes_test
 from finance.forms import CadastroForm
 from finance.forms import EditarContaForm
 from django.contrib.auth import update_session_auth_hash
+import calendar
+from django.db.models import Sum
 
 
 
@@ -269,13 +271,45 @@ def mes_atual_padrao(request):
     return redirect('mes_atual', ano=hoje.year, mes=hoje.month)
 
 
-def grafico_mes(request, ano, mes):
-    # Redireciona para a página do gráfico e passa o  mesmos dados do mes_atual para o gráfico
+def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
+            
+    mes_anterior = mes - 1 if mes > 1 else 12
+    ano_anterior = ano if mes > 1 else ano - 1
+
+    mes_proximo = mes + 1 if mes < 12 else 1
+    ano_proximo = ano if mes < 12 else ano + 1
+    
+    from decimal import Decimal
+    
+    transacoes = Transacao.objects.filter(data__year=ano, data__month=mes)    
+    entradas = transacoes.filter(categoria__iexact="receita").aggregate(Sum("valor"))["valor__sum"] or 0
+    saidas = transacoes.filter(categoria__iexact="despesa").aggregate(Sum("valor"))["valor__sum"] or 0
+    guardar = entradas - saidas
+    
+    
+
+
     context = {
         "ano": ano,
         "mes": mes,
+        "mes_nome": calendar.month_name[mes],
+        "ano_anterior": ano_anterior,
+        "mes_anterior": mes_anterior,
+        "mes_anterior_nome": calendar.month_name[mes_anterior],
+        "ano_proximo": ano_proximo,
+        "mes_proximo": mes_proximo,
+        "mes_proximo_nome": calendar.month_name[mes_proximo],
+        "total_entradas":entradas,
+        "total_saidas": saidas,
+        "total_guardar": guardar,
+        
+        "total_prev_entradas": Decimal(0),  # Substitua pelo valor previsto de entradas
+        "total_prev_saidas": Decimal(0),  # Substitua pelo valor previsto de saídas
+        "total_prev_guardar": Decimal(0),  # Substitua pelo valor previsto de guardar
+       
     }
     return render(request, "finance/grafico_mes.html", context)
+
 
 
 

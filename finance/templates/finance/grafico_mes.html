@@ -10,50 +10,72 @@
   <body class="bg-light">
     <div class="container mt-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="{% url 'mes_atual' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary">⬅️ {{ mes_anterior_nome }}</a>
+        <a href="{% url 'grafico_mes' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary">⬅️ {{ mes_anterior_nome }}</a>
         <h1>Gráfico - {{ mes_nome }} {{ ano }}</h1>
-        <a href="{% url 'mes_atual' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary">{{ mes_proximo_nome }} ➡️</a>
+        <a href="{% url 'grafico_mes' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary">{{ mes_proximo_nome }} ➡️</a>
       </div>
 
       <div class="card shadow p-4">
         <canvas id="graficoMes" width="600" height="300"></canvas>
       </div>
 
+    
       <div class="text-center mt-3">
-        <a href="{% url 'mes_atual' ano=ano mes=mes %}" class="btn btn-secondary">⬅️ Voltar para o mês</a>
+        <a href="{% url 'grafico_mes' ano=ano mes=mes %}" class="btn btn-secondary">⬅️ Voltar para o mês</a>
       </div>
     </div>
 
+    <!-- Script para criar o gráfico usando Chart.js -->
     <script>
-const ctx = document.getElementById('graficoMes').getContext('2d');
-const graficoMes = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Entradas', 'Saídas', 'Guardar'],
-        datasets: [
-            {
-                label: 'Realizado',
-                data: [{{ total_entradas }}, {{ total_saidas }}, {{ total_guardar }}],
-                backgroundColor: 'rgba(54, 162, 235, 0.5)'
-            },
-            {
-                label: 'Previsto',
-                data: [{{ total_prev_entradas }}, {{ total_prev_saidas }}, {{ total_prev_guardar }}],
-                backgroundColor: 'rgba(255, 99, 132, 0.5)'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Comparativo Previsão x Realizado' }
+document.addEventListener("DOMContentLoaded", function () {
+
+    const ctx = document.getElementById('graficoMes');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Entradas', 'Saídas', 'Guardar'],
+            //labels:[100,50,25],
+            datasets: [
+                {
+                    label: 'Valores (R$)',
+                    data: [
+                        {{ total_entradas|floatformat:2 }},
+                        {{ total_saidas|floatformat:2 }},
+                        {{ total_guardar|floatformat:2 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(255, 206, 86, 0.5)'
+                    ]
+                },
+                {
+                    label: 'Previsto',
+                    data: [
+                        {{ total_prev_entradas|floatformat:2 }},
+                        {{ total_prev_saidas|floatformat:2 }},
+                        {{ total_prev_guardar|floatformat:2 }}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ]
+                }
+            ]
         },
-        scales: {
-            y: { beginAtZero: true }
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Comparativo Previsão x Realizado' }
+            }
         }
-    }
+    });
+
 });
 </script>
+
   </body>
 </html>
