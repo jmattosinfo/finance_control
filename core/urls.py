@@ -9,13 +9,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # principais
-    path('', views.mes_atual, name='mes_atual'),
+    path('', views.mes_atual_padrao, name='home'),
+    path('mes/', views.mes_atual, name='mes_atual'),
+    
     path('sobre/', views.sobre, name='sobre'),
       
-    
-    # autenticação
-    path("login/", core_views.login_view, name="login"),
-    path('logout/', views.logout_view, name='logout'),
+    # autenticação    
     path('login/', auth_views.LoginView.as_view(template_name='finance/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path("cadastro/", views.cadastro_view, name="cadastro"),
@@ -31,7 +30,6 @@ urlpatterns = [
     path('excluir_conta/', views.excluir_conta, name='excluir_conta'),
     path('usuarios/', views.listar_usuarios, name='listar_usuarios'),
 
-
     # transações
     path('nova/', views.nova_transacao, name='nova_transacao'),
     path('transacoes/', views.listar_transacoes, name='listar_transacoes'),
@@ -40,8 +38,8 @@ urlpatterns = [
     
 
     # meses
-    path('mes/<int:ano>/<int:mes>/', views.mes_atual, name='mes_navegar'),
-    #path('mes/', views.mes_atual_padrao, name='mes_atual_padrao'),
+    path('mes/<int:ano>/<int:mes>/', views.mes_atual, name='mes_atual'),
+    
     path('grafico/<int:ano>/<int:mes>/', views.grafico_mes, name='grafico_mes'),
     
     path('teste-context/', views.teste_context_processor, name='teste_context'),

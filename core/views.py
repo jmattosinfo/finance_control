@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.contrib import messages
 from finance.models import Transacao
-#from .models import Transacao
 from finance.forms import TransacaoForm
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date
@@ -16,7 +15,7 @@ from django.contrib.auth.decorators import user_passes_test
 from finance.forms import CadastroForm
 from finance.forms import EditarContaForm
 from django.contrib.auth import update_session_auth_hash
-import calendar
+from django.views.decorators.http import require_http_methods
 from django.db.models import Sum
 
 
@@ -92,11 +91,12 @@ def nova_transacao(request): # Função para lidar com a criação de uma nova t
     if request.method == 'POST': # Verifica se o formulário foi enviado via POST
         form = TransacaoForm(request.POST)
         if form.is_valid():
-            Transacao = form.save(commit=False)
-            Transacao.user = request.user  # Atribui o usuário atual à transação
-            Transacao.save()
+            nova_transacao_obj = form.save(commit=False)
+            nova_transacao_obj.user = request.user  # Atribui o usuário atual à transação
+            nova_transacao_obj.save()
             messages.success(request, 'Transação adicionada com sucesso!')
-            return redirect('mes_atual') # Redireciona para a página inicial toda vez que uma nova transação é criada
+            hoje = date.today()
+            return redirect('mes_atual', ano=hoje.year, mes=hoje.month) # Redireciona para a página inicial toda vez que uma nova transação é criada
     else:
         form = TransacaoForm()
         
@@ -133,11 +133,13 @@ def cadastro_view(request):
 
     return render(request, 'finance/cadastro.html', {'form': form})
 
-
+@require_http_methods(["GET", "POST"])
 def logout_view(request):
     
     logout(request)
+    messages.info(request, "Você saiu do sistema. Até logo!")
     return redirect('login')
+
 
 
 
@@ -244,7 +246,7 @@ def mes_atual(request, ano=None, mes=None):
             transacao.user = request.user
             transacao.save()
             messages.success(request, "Transação atualizada com sucesso!")
-            return redirect("mes_atual")  # redireciona pra o mês atual
+            return redirect("mes_atual", ano=ano, mes=mes)  # redireciona pra o mês atual
 
     context = {
         'ano': ano,
@@ -266,7 +268,6 @@ def mes_atual(request, ano=None, mes=None):
 
 def mes_atual_padrao(request):
     hoje = date.today()
-
     
     return redirect('mes_atual', ano=hoje.year, mes=hoje.month)
 
@@ -285,20 +286,17 @@ def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
     entradas = transacoes.filter(categoria__iexact="receita").aggregate(Sum("valor"))["valor__sum"] or 0
     saidas = transacoes.filter(categoria__iexact="despesa").aggregate(Sum("valor"))["valor__sum"] or 0
     guardar = entradas - saidas
-    
-    
-
 
     context = {
         "ano": ano,
         "mes": mes,
-        "mes_nome": calendar.month_name[mes],
+        "mes_nome": MESES_PT[mes],
         "ano_anterior": ano_anterior,
         "mes_anterior": mes_anterior,
-        "mes_anterior_nome": calendar.month_name[mes_anterior],
+        "mes_anterior_nome": MESES_PT[mes_anterior],
         "ano_proximo": ano_proximo,
         "mes_proximo": mes_proximo,
-        "mes_proximo_nome": calendar.month_name[mes_proximo],
+        "mes_proximo_nome": MESES_PT[mes_proximo],
         "total_entradas":entradas,
         "total_saidas": saidas,
         "total_guardar": guardar,
@@ -309,8 +307,6 @@ def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
        
     }
     return render(request, "finance/grafico_mes.html", context)
-
-
 
 
 def editar_transacao(request, transacao_id):

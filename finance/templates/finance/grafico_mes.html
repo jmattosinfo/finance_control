@@ -19,10 +19,11 @@
         <canvas id="graficoMes" width="600" height="300"></canvas>
       </div>
 
-    
-      <div class="text-center mt-3">
-        <a href="{% url 'grafico_mes' ano=ano mes=mes %}" class="btn btn-secondary">⬅️ Voltar para o mês</a>
+      <div class="d-flex justify-content-center gap-2 mt-4">
+        <a href="{% url 'mes_atual' ano=ano mes=mes %}" class="btn btn-secondary">
+        📊 Voltar para Detalhes</a>
       </div>
+
     </div>
 
     <!-- Script para criar o gráfico usando Chart.js -->
@@ -35,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
         type: 'doughnut',
         data: {
             labels: ['Entradas', 'Saídas', 'Guardar'],
-            //labels:[100,50,25],
             datasets: [
                 {
                     label: 'Valores (R$)',
