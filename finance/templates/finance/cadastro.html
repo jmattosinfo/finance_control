@@ -1,7 +1,7 @@
 {% extends 'finance/base.html' %}
 
 {% block content %}
-  <div class="container mt-5 mb-5" style="max-width: 500%px;">
+  <div class="container mt-5 mb-5" style="max-width: 700px !important; width: 100%;">
     <div class="card shadow-lg border-0 rounded-4">
       <div class="card-body p-4 p-md-5">
         <div class="text-center mb-4">
@@ -48,27 +48,14 @@
             </div>
           </div>
 
-          {% comment %} <div class="mb-3">
-            <label class="form-label small fw-bold text-muted text-uppercase">Senha</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-lock"></i></span>
-              {{ form.password1 }}
-            </div>
-            <small class="text-muted d-block mb-2">
-              <i class="fa-solid fa-circle-info me-1"></i>
-              A senha deve ter pelo menos 8 caracteres e não pode ser apenas números.
-            </small>
-            {% if form.password1.errors %}
-              <div class="text-danger x-small mt-1">{{ form.password1.errors }}</div>
-            {% endif %}
-          </div> {% endcomment %}
-
           <div class="mb-4">
             <label class="form-label small fw-bold text-muted text-uppercase">Confirmar Senha</label>
             <div class="input-group">
               <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-shield-check"></i></span>
               {{ form.password2 }}
+              <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="togglePassword2"><i class="fa-solid fa-eye" id="eyeIcon2"></i></button>
             </div>
+
             <small class="text-muted d-block mb-2">
               <i class="fa-solid fa-circle-info me-1"></i>
               A senha deve ter pelo menos 8 caracteres e não pode ser apenas números.
@@ -90,53 +77,78 @@
   </div>
 
   <style>
-    /* Ajuste global para os inputs do Django */
+    /* 1. Reset e Estilo Geral dos Inputs */
     input {
       display: block;
       width: 100%;
-      padding: 0.375rem 0.75rem;
-      font-size: 1rem;
-      border: 1px solid #ced4da;
-      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.95rem;
+      border: 1px solid #dee2e6; /* Cor de borda mais suave */
+      color: #495057;
     }
     
-    /* ESSENCIAL: Impede que o input quebre a linha dentro do grupo com ícones */
+    /* Comportamento dentro do Grupo (Lado a Lado) */
+    .input-group {
+      display: flex;
+      align-items: stretch;
+    }
+    
     .input-group > input {
       flex: 1 1 auto;
-      width: 1%; /* Truque do Bootstrap para o flexbox funcionar corretamente */
-      display: inline-block;
-      border-radius: 0; /* Remove o arredondado do meio para colar no ícone */
+      width: 1%;
+      border-radius: 0;
+      border-left: none; /* REMOVE A BORDA QUE CAUSA O RISCO PRETO */
+      border-right: none; /* Prepara para o botão do olho */
     }
     
-    /* Arredonda apenas as pontas externas do grupo */
-    .input-group > .input-group-text {
-      border-top-left-radius: 0.375rem;
-      border-bottom-left-radius: 0.375rem;
+    /* Ajuste do ícone da Esquerda */
+    .input-group-text {
+      background-color: #fff !important;
+      border: 1px solid #dee2e6;
+      border-right: none; /* REMOVE A BORDA DIREITA DO ÍCONE */
+      border-top-left-radius: 0.5rem !important;
+      border-bottom-left-radius: 0.5rem !important;
+      color: #adb5bd;
     }
     
-    .input-group > button {
-      border-top-right-radius: 0.375rem;
-      border-bottom-right-radius: 0.375rem;
+    /* Ajuste do Botão da Direita (Olho) */
+    .input-group button {
+      border: 1px solid #dee2e6;
+      border-left: none; /* REMOVE A BORDA ESQUERDA DO BOTÃO */
+      border-top-right-radius: 0.5rem !important;
+      border-bottom-right-radius: 0.5rem !important;
+      background-color: #fff;
     }
     
-    /* Cor de foco personalizada */
-    input:focus {
-      border-color: #198754;
+    .input-group > input:last-child {
+      border-right: 1px solid #dee2e6;
+      border-top-right-radius: 0.5rem !important;
+      border-bottom-right-radius: 0.5rem !important;
+    }
+    
+    /* Efeito (Verde) */
+    input:focus,
+    .input-group button:focus {
+      z-index: 3;
+      border-color: #198754 !important;
       outline: 0;
-      box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-      z-index: 5; /* Garante que a borda do foco apareça sobre os outros elementos */
+      box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15);
+    }
+    
+    /* Estilo do Card */
+    .card {
+      border-radius: 1rem !important;
     }
     
     .x-small {
-      font-size: 0.78rem;
-      line-height: 1.4;
-      color: #6c757d;
+      font-size: 0.75rem;
     }
   </style>
 
   <script>
     const togglePassword = document.querySelector('#togglePassword')
     const passwordField = document.querySelector('input[name="password1"]') // Seleciona o campo pelo nome que o Django dá
+    // Seleciona o campo pelo nome que o Django dá
     const eyeIcon = document.querySelector('#eyeIcon')
     
     togglePassword.addEventListener('click', function () {
@@ -148,6 +160,19 @@
       this.classList.toggle('active')
       eyeIcon.classList.toggle('fa-eye')
       eyeIcon.classList.toggle('fa-eye-slash')
+    })
+    
+    const togglePassword2 = document.querySelector('#togglePassword2')
+    const passwordField2 = document.querySelector('input[name="password2"]')
+    const eyeIcon2 = document.querySelector('#eyeIcon2')
+    
+    togglePassword2.addEventListener('click', function () {
+      const type = passwordField2.getAttribute('type') === 'password' ? 'text' : 'password'
+      passwordField2.setAttribute('type', type)
+    
+      this.classList.toggle('active')
+      eyeIcon2.classList.toggle('fa-eye')
+      eyeIcon2.classList.toggle('fa-eye-slash')
     })
   </script>
 {% endblock %}
