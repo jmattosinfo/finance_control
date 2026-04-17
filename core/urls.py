@@ -9,7 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # principais
-    path('', views.mes_atual_padrao, name='home'),
+    path('', views.home, name='home'),
     path('mes/', views.mes_atual, name='mes_atual'),
     
     path('sobre/', views.sobre, name='sobre'),
@@ -31,7 +31,7 @@ urlpatterns = [
     path('usuarios/', views.listar_usuarios, name='listar_usuarios'),
 
     # transações
-    path('nova/', views.nova_transacao, name='nova_transacao'),
+    path('nova_transacao/', views.nova_transacao, name='nova_transacao'),
     path('transacoes/', views.listar_transacoes, name='listar_transacoes'),
     path('excluir/<int:transacao_id>/', views.excluir_transacao, name='excluir_transacao'),
     path('editar/<int:transacao_id>/', views.editar_transacao, name='editar_transacao'),

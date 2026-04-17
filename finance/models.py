@@ -1,26 +1,39 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
-#models.py servem para definir a estrutura do banco de dados, criando tabelas e campos.
-# para começar a criar modelos, você deve importar models do django.db e criar classes que herdam de models.Model.
 
-#criar um modelo de transação financeira como exemplo que contenha descrição, valor, data e categoria (receita ou despesa).
+class Membro(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.nome
 
-class Transacao(models.Model): #models.Model herda da classe Model do Django
+class Transacao(models.Model):
     CATEGORIAS = [
         ('receita', 'Receita'),
         ('despesa', 'Despesa'),
     ]
+    # Aqui usamos o relacionamento com o modelo Membro
+    membro = models.ForeignKey(Membro, on_delete=models.SET_NULL, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=100) #CharField é um campo de texto com tamanho máximo definido
+    descricao = models.CharField(max_length=100)
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    data = models.DateField()
+    data = models.DateField() 
+    data_vencimento = models.DateField(null=True, blank=True) 
     categoria = models.CharField(max_length=20, choices=CATEGORIAS)
-    pago = models.BooleanField(default=False) #BooleanField é um campo que armazena valores True ou False
-    
+    pago = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.descricao} - {self.valor} - {self.data} - {self.categoria} - {'Pago' if self.pago else 'Não Pago'}"
+        status = 'Pago' if self.pago else 'Pendente'
+        return f"{self.data_vencimento} | {self.descricao}: R$ {self.valor} ({status})"
 
-    #__str__ define a representação em string do objeto, útil para exibição no administrador do Django.
-    # self refere-se à instância atual do modelo que esta sendo manipulada.
+class Previsao(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=100)
+    valor_previsto = models.DecimalField(max_digits=10, decimal_places=2)
+    categoria = models.CharField(max_length=20, choices=Transacao.CATEGORIAS)
+    mes_referencia = models.IntegerField() 
+    ano_referencia = models.IntegerField()
+
+    def __str__(self):
+        return f"PREV: {self.descricao} - R$ {self.valor_previsto}"

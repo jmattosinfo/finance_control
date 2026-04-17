@@ -1,9 +1,13 @@
 # aqui no admin.py você registra seus modelos para que possam ser gerenciados 
 # através do painel de administração do Django.
 from django.contrib import admin
-from .models import Transacao
+from .models import Transacao, Membro, Previsao
+
 
 admin.site.register(Transacao)
+admin.site.register(Membro)
+admin.site.register(Previsao)
+
 class TransacaoAdmin(admin.ModelAdmin):
     list_display = ('descricao', 'valor', 'data', 'categoria', 'pago') # Campos a serem exibidos na lista de transações
     list_filter = ('data', 'categoria', 'pago') # Filtros laterais para facilitar a busca

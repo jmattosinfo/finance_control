@@ -8,6 +8,7 @@
     <title>Controle Mensal - {{ mes_nome }} {{ ano }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -21,16 +22,12 @@
         background-color: #f8f9fa;
         font-family: 'Segoe UI', sans-serif;
       }
-      
-      /* Navbar */
       .navbar-custom {
         background-color: var(--bs-primary);
         color: white;
         padding: 0.7rem 1rem;
         margin-bottom: 2rem;
       }
-      
-      /* Cards */
       .card-summary {
         border: none;
         border-radius: 12px;
@@ -40,7 +37,6 @@
       .card-summary:hover {
         transform: translateY(-3px);
       }
-      
       .main-card {
         border: none;
         border-radius: 15px;
@@ -48,18 +44,8 @@
         background: white;
         padding: 1.5rem;
       }
-      
-      /* Tabelas */
       .table thead {
         background-color: #f1f3f5;
-      }
-      .badge-receita {
-        background-color: rgba(39, 174, 96, 0.1);
-        color: var(--bs-success);
-      }
-      .badge-despesa {
-        background-color: rgba(192, 57, 43, 0.1);
-        color: var(--bs-danger);
       }
     </style>
   </head>
@@ -69,9 +55,7 @@
         <span class="navbar-brand mb-0 h1 text-white"><i class="fa-solid fa-wallet me-2"></i>Finance Control</span>
         <div class="d-flex align-items-center gap-3">
           <span class="small opacity-75">Olá, <strong>{{ user.username }}</strong></span>
-
           <a href="{% url 'editar_conta' %}" class="btn btn-sm btn-outline-light"><i class="fa-solid fa-user-gear"></i> Perfil</a>
-
           <form action="{% url 'logout' %}" method="post" class="d-inline">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
@@ -83,9 +67,7 @@
     <div class="container">
       <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm">
         <a href="{% url 'mes_atual' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary rounded-pill"><i class="fa-solid fa-chevron-left"></i> {{ mes_anterior_nome }}</a>
-
         <h2 class="h4 m-0 fw-bold">{{ mes_nome }} <span class="text-muted fw-light">{{ ano }}</span></h2>
-
         <a href="{% url 'mes_atual' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary rounded-pill">{{ mes_proximo_nome }} <i class="fa-solid fa-chevron-right"></i></a>
       </div>
 
@@ -94,21 +76,18 @@
           <div class="card card-summary p-3">
             <h6 class="text-success text-uppercase small fw-bold">Entradas</h6>
             <div class="fs-3 fw-bold text-dark">R$ {{ total_entradas }}</div>
-            <div class="text-muted small">Previsto: R$ {{ total_prev_entradas }}</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-summary p-3">
             <h6 class="text-danger text-uppercase small fw-bold">Saídas</h6>
             <div class="fs-3 fw-bold text-dark">R$ {{ total_saidas }}</div>
-            <div class="text-muted small">Previsto: R$ {{ total_prev_saidas }}</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-summary p-3 bg-primary text-white">
-            <h6 class="text-uppercase small fw-bold opacity-75">Guardar</h6>
-            <div class="fs-3 fw-bold">R$ {{ total_guardar }}</div>
-            <div class="small opacity-75">Previsto: R$ {{ total_prev_guardar }}</div>
+            <h6 class="text-uppercase small fw-bold opacity-75">Saldo Disponível</h6>
+            <div class="fs-3 fw-bold">R$ {{ total_bruto }}</div>
           </div>
         </div>
       </div>
@@ -117,103 +96,121 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h4 class="m-0 fw-bold text-dark"><i class="fa-solid fa-list-ul me-2 text-primary"></i>Transações</h4>
           <div class="d-flex gap-2">
-            {% comment %}Botão que leva para o gráfico do mês{% endcomment %}
             <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#modalGrafico"><i class="fa-solid fa-chart-line"></i> Gráfico</button>
-
-            {% comment %}Botão Nova Transação{% endcomment %}
             <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#modalNovaTransacao"><i class="fa-solid fa-plus"></i> Nova Transação</button>
           </div>
         </div>
 
         <div class="table-responsive">
           <table class="table table-hover align-middle">
-            <thead>
-              <tr class="small text-muted text-uppercase">
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th class="text-end">Valor</th>
-                <th class="text-center">Ações</th>
+            <thead class="table-light">
+              <tr>
+                <th class="text-muted small text-uppercase">Vencimento</th>
+                <th class="text-muted small text-uppercase">Responsável</th>
+                <th class="text-muted small text-uppercase">Descrição</th>
+                <th class="text-muted small text-uppercase">Categoria</th>
+                <th class="text-muted small text-uppercase">Valor</th>
+                <th class="text-muted small text-uppercase">Status</th>
+                <th class="text-muted small text-uppercase text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {% for t in transacoes %}
+              {% for transacao in transacoes %}
                 <tr>
-                  <td class="text-muted small">{{ t.data|date:'d/m/Y' }}</td>
-                  <td class="fw-bold">{{ t.descricao }}</td>
+                  <td class="fw-bold text-secondary">{{ transacao.data_vencimento|date:'d/m/Y'|default:'-' }}</td>
                   <td>
-                    <span class="badge {% if t.categoria == 'receita' %}
-                        
-                        
-                                               
-                        badge-receita
-
-
-
-                      {% else %}
-                        
-                        
-                                         
-                        badge-despesa
-
-
-
-                      {% endif %} rounded-pill px-3">
-                      {{ t.get_categoria_display }}
-                    </span>
+                    {% if transacao.membro %}
+                      <span class="badge rounded-pill {% if transacao.membro.nome == 'JC' %}bg-primary{% else %}bg-info text-dark{% endif %}">
+                        {{ transacao.membro.nome }}
+                      </span>
+                    {% else %}<span class="text-muted small">-</span>{% endif %}
                   </td>
-                  <td class="text-end fw-bold {% if t.categoria == 'receita' %}
-                      
-                      
-                      
-                    
-                      
-                      text-success
-
-
-
-
+                  <td class="fw-bold">{{ transacao.descricao }}</td>
+                  <td>
+                    {% if transacao.categoria == 'receita' %}
+                      <span class="text-success small"><i class="bi bi-arrow-up-circle"></i> Entrada</span>
                     {% else %}
-                      
-                      
-                      
-                      
-                      text-danger
-
-
-
-
-                    {% endif %}">R$ {{ t.valor|floatformat:2 }}</td>
+                      <span class="text-danger small"><i class="bi bi-arrow-down-circle"></i> Saída</span>
+                    {% endif %}
+                  </td>
+                  <td class="{% if transacao.categoria == 'receita' %}text-success{% else %}text-danger{% endif %} fw-bold">R$ {{ transacao.valor }}</td>
+                  <td>
+                    {% if transacao.pago %}
+                      <span class="badge bg-success-subtle text-success border border-success">Pago</span>
+                    {% else %}
+                      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning">Pendente</span>
+                    {% endif %}
+                  </td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-light border" onclick="abrirModalEditar({{ t.id }}, '{{ t.descricao }}', {{ t.valor|stringformat:'.2f' }}, '{{ t.data|date:'Y-m-d' }}', '{{ t.categoria }}', {{ t.pago|yesno:'true,false' }})"><i class="fa-solid fa-pen text-warning"></i></button>
-                    <button type="button" class="btn btn-sm btn-light border" onclick="abrirModalExcluir({{ t.id }}, '{{ t.descricao }}')"><i class="fa-solid fa-trash text-danger"></i></button>
+                    <div class="btn-group">
+                      <button class="btn btn-sm btn-outline-secondary border-0" data-bs-toggle="modal" data-bs-target="#modalEditar{{ transacao.id }}">Editar</button>
+                      <button class="btn btn-sm btn-outline-danger border-0" data-bs-toggle="modal" data-bs-target="#confirmarExclusao{{ transacao.id }}">Excluir</button>
+                    </div>
                   </td>
                 </tr>
-              {% empty %}
-                <tr>
-                  <td colspan="5" class="text-center py-4 text-muted">Nenhuma transação encontrada.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <div class="main-card mb-5">
-        <h4 class="mb-4 fw-bold text-dark small text-uppercase"><i class="fa-solid fa-crystal-ball me-2"></i>Previsões</h4>
-        <div class="table-responsive">
-          <table class="table table-sm">
-            <tbody>
-              {% for p in previsoes %}
-                <tr>
-                  <td>{{ p.descricao }}</td>
-                  <td class="text-muted">{{ p.get_categoria_display }}</td>
-                  <td class="text-end fw-bold">R$ {{ p.valor_previsto|floatformat:2 }}</td>
-                </tr>
+                <div class="modal fade" id="modalEditar{{ transacao.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                      <form method="POST" action="{% url 'editar_transacao' transacao.id %}">
+                        {% csrf_token %}
+                        <div class="modal-header border-0 bg-light">
+                          <h5 class="modal-title fw-bold">Editar Transação</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                          <div class="mb-3">
+                            <label class="form-label small fw-bold">Descrição</label>
+                            <input type="text" name="descricao" class="form-control" value="{{ transacao.descricao }}" required />
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <label class="form-label small fw-bold">Valor</label>
+                              <input type="number" step="0.01" name="valor" class="form-control" value="{{ transacao.valor|stringformat:'.2f' }}" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <label class="form-label small fw-bold">Data</label>
+                              <input type="date" name="data" class="form-control" value="{{ transacao.data|date:'Y-m-d' }}" required />
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small fw-bold">Categoria</label>
+                            <select name="categoria" class="form-select" required>
+                              <option value="receita" {% if transacao.categoria == 'receita' %}selected{% endif %}>Receita</option>
+                              <option value="despesa" {% if transacao.categoria == 'despesa' %}selected{% endif %}>Despesa</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="modal-footer border-0 p-4">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                          <button type="submit" class="btn btn-success px-4">Salvar Alterações</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal fade" id="confirmarExclusao{{ transacao.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content border-0">
+                      <div class="modal-body text-center p-4">
+                        <i class="fa-solid fa-circle-exclamation text-danger fa-3x mb-3"></i>
+                        <h5 class="fw-bold">Tem certeza?</h5>
+                        <p class="text-muted small">Deseja excluir "<strong>{{ transacao.descricao }}</strong>"?</p>
+                        <div class="d-flex gap-2 justify-content-center mt-4">
+                          <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Não</button>
+                          <form method="POST" action="{% url 'excluir_transacao' transacao.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm px-3">Sim, Excluir</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               {% empty %}
-                <tr>
-                  <td colspan="3" class="text-center text-muted small">Sem previsões para este período.</td>
-                </tr>
+                <tr><td colspan="7" class="text-center py-4 text-muted">Nenhuma transação encontrada.</td></tr>
               {% endfor %}
             </tbody>
           </table>
@@ -221,54 +218,34 @@
       </div>
     </div>
 
-    {% comment %}Modal para nova transação{% endcomment %}
     <div class="modal fade" id="modalNovaTransacao" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <form method="POST" action="{% url 'nova_transacao' %}">
             {% csrf_token %}
             <div class="modal-header border-0 bg-light">
-              <h5 class="modal-title fw-bold">Nova Transação</h5>
+              <h5 class="modal-title fw-bold">🧾 Nova Transação</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Descrição</label>
-                <input type="text" name="descricao" class="form-control" required />
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label small fw-bold">Valor</label>
-                  <input type="number" step="0.01" name="valor" class="form-control" required />
+              {% for field in form %}
+                <div class="mb-3">
+                  <label class="form-label small fw-bold">{{ field.label }}</label>
+                  {{ field }}
                 </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label small fw-bold">Data</label>
-                  <input type="date" name="data" class="form-control" required />
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Categoria</label>
-                <select name="categoria" class="form-select" required>
-                  <option value="receita">Receita</option>
-                  <option value="despesa">Despesa</option>
-                </select>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" name="pago" class="form-check-input" id="pagoNova" />
-                <label class="form-check-label" for="pagoNova">Marcar como pago</label>
-              </div>
+              {% endfor %}
             </div>
             <div class="modal-footer border-0 p-4">
-              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-success px-4">Salvar</button>
+              <button type="submit" class="btn btn-success px-4">Salvar Transação</button>
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    {% comment %}Modal Gráfico{% endcomment %}
-    <div class="modal fade" id="modalGrafico" tabindex="-1" aria-hidden="true">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="modal fade" id="modalGrafico" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4">
           <div class="modal-header border-0 bg-light">
@@ -287,146 +264,53 @@
       </div>
     </div>
 
-    {% comment %}Modal para editar transação{% endcomment %}
-    <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-          <form method="POST" id="formEditar">
-            {% csrf_token %}
-            <input type="hidden" name="transacao_id" id="editar_id" />
-            <div class="modal-header border-0 bg-light">
-              <h5 class="modal-title fw-bold">Editar Transação</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Descrição</label>
-                <input type="text" name="descricao" class="form-control" id="editar_descricao" required />
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label small fw-bold">Valor</label>
-                  <input type="number" step="0.01" name="valor" class="form-control" id="editar_valor" required />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label small fw-bold">Data</label>
-                  <input type="date" name="data" class="form-control" id="editar_data" required />
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Categoria</label>
-                <select name="categoria" class="form-select" id="editar_categoria" required>
-                  <option value="receita">Receita</option>
-                  <option value="despesa">Despesa</option>
-                </select>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" name="pago" class="form-check-input" id="editar_pago" />
-                <label class="form-check-label">Pago</label>
-              </div>
-            </div>
-            <div class="modal-footer border-0 p-4">
-              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-success px-4">Salvar Alterações</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    {% comment %}Modal para excluir transação{% endcomment %}
-    <div class="modal fade" id="modalExcluir" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0">
-          <div class="modal-body text-center p-4">
-            <i class="fa-solid fa-circle-exclamation text-danger fa-3x mb-3"></i>
-            <h5 class="fw-bold">Tem certeza?</h5>
-            <p class="text-muted small" id="corpoExcluir"></p>
-            <div class="d-flex gap-2 justify-content-center mt-4">
-              <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Não</button>
-              <a href="#" class="btn btn-danger btn-sm px-3" id="btnConfirmarExcluir">Sim, Excluir</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      function abrirModalEditar(id, descricao, valor, data, categoria, pago) {
-        document.getElementById('editar_id').value = id
-        document.getElementById('editar_descricao').value = descricao
-        document.getElementById('editar_valor').value = valor
-        document.getElementById('editar_data').value = data
-        document.getElementById('editar_categoria').value = categoria
-        document.getElementById('editar_pago').checked = pago === true || pago === 'true'
-        new bootstrap.Modal(document.getElementById('modalEditar')).show()
-      }
-      
-      function abrirModalExcluir(id, descricao) {
-        document.getElementById('corpoExcluir').innerHTML = `A transação "<strong>${descricao}</strong>" será removida permanentemente.`
-        document.getElementById('btnConfirmarExcluir').href = `/excluir/${id}/`
-        new bootstrap.Modal(document.getElementById('modalExcluir')).show()
-      }
-    </script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let chartInstance = null;
+      const modalEl = document.getElementById('modalGrafico');
 
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-  let chartInstance = null;
-  const modalEl = document.getElementById('modalGrafico');
+      modalEl.addEventListener('shown.bs.modal', function () {
+        const ctx = document.getElementById('graficoMesAtual').getContext('2d');
 
-  modalEl.addEventListener('shown.bs.modal', function () {
-    const ctx = document.getElementById('graficoMesAtual').getContext('2d');
-
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-
-    chartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Entradas', 'Saídas', 'Guardar'],
-        datasets: [
-          {
-            label: 'Realizado',
-            data: [
-              {{ total_entradas|default:0|stringformat:".2f" }}, 
-              {{ total_saidas|default:0|stringformat:".2f" }}, 
-              {{ total_guardar|default:0|stringformat:".2f" }}
-            ],
-            backgroundColor: ['#27ae60', '#c0392b', '#2980b9'],
-            hoverOffset: 15,
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          },
-          {
-            label: 'Previsto',
-            data: [
-              {{ total_prev_entradas|default:0|stringformat:".2f" }}, 
-              {{ total_prev_saidas|default:0|stringformat:".2f" }}, 
-              {{ total_prev_guardar|default:0|stringformat:".2f" }}
-            ],
-            backgroundColor: ['#a2f0c1', '#f5b7b1', '#aed6f1'],
-            hoverOffset: 15,
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '65%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { usePointStyle: true, padding: 20 }
-          }
+        if (chartInstance) {
+          chartInstance.destroy();
         }
-      }
+
+        chartInstance = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Entradas', 'Saídas', 'Saldo'],
+            datasets: [
+              {
+                label: 'Realizado',
+                // Usando as variáveis que o Django envia para a página
+                data: [
+                  {{ total_entradas|default:0|stringformat:".2f" }}, 
+                  {{ total_saidas|default:0|stringformat:".2f" }}, 
+                  {{ total_bruto|default:0|stringformat:".2f" }}
+                ],
+                backgroundColor: ['#27ae60', '#c0392b', '#2c3e50'],
+                hoverOffset: 15,
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { usePointStyle: true, padding: 20 }
+              }
+            }
+          }
+        });
+      });
     });
-  });
-});
-</script>
+    </script>
+    
   </body>
 </html>
