@@ -1,132 +1,47 @@
-# 💰 Finance Control
+# 💰 Finance Control - Gestão Financeira Inteligente
 
-Sistema web de gerenciamento financeiro desenvolvido com Django.
-
-O projeto permite controle de receitas, despesas e organização financeira pessoal através de uma interface web simples e funcional.
+Sistema web de alta performance para gerenciamento financeiro pessoal, desenvolvido com **Django**. O projeto soluciona a organização de fluxos de caixa através de uma arquitetura robusta e interface orientada à experiência do usuário (UX).
 
 ---
 
-## Status do Projeto
-Versão inicial funcional com CRUD completo de receitas e despesas. Projeto em evolução — novas funcionalidades estão sendo implementadas continuamente.
+## 🚀 Diferenciais e Autoridade Técnica
 
-
-## Tecnologias Utilizadas
-
-- Python 3
-- Django
-- Bootstrap
-- SQLite3
-- HTML5
-- CSS3
-- JavaScript
+Diferente de sistemas básicos, este projeto implementa:
+- **Arquitetura MVT (Model-View-Template):** Separação rigorosa de responsabilidades, garantindo facilidade na manutenção e escalabilidade.
+- **Server-Side Rendering (SSR):** Processamento lógico de saldos e filtragem temporal realizado integralmente no backend, entregando um HTML otimizado e seguro ao cliente.
+- **Data Visualization:** Integração estratégica de **JavaScript (Chart.js)** para transformar dados brutos em insights visuais (Entradas vs. Saídas).
+- **Segurança de Dados:** Implementação de proteção contra ataques CSRF e validação de integridade via Django Forms e ORM.
 
 ---
 
-## Estrutura do Projeto
+## 📸 Demonstração e Interface
+
+| Dashboard Mensal | Análise com Gráficos |
+| :---: | :---: |
+| ![Dashboard](assets/images/dash.png) | ![Gráficos](assets/images/grafico.png) |
+
+| Gestão de Lançamentos | Edição e Exclusão |
+| :---: | :---: |
+| ![Cadastro](assets/images/addItem.png) | ![Edição](assets/images/editar.png) |
+
+---
+
+## 🛠️ Stack Tecnológica
+
+- **Core:** Python 3.x / Django (Framework Full-stack)
+- **Frontend:** Bootstrap 5 (UI/UX Responsivo), FontAwesome (Iconografia)
+- **Database:** SQLite3 (Desenvolvimento) / Preparado para PostgreSQL
+- **Analytics:** Chart.js (Visualização de dados dinâmica)
+
+---
+
+## 🏗️ Estrutura Arquitetural
+
+O projeto segue um padrão de organização modular, facilitando a portabilidade e manutenção:
+
+```text
 FINANCE_CONTROL/
-│
-├── core/ # Configurações principais do projeto
-│ ├── settings.py
-│ ├── urls.py
-│ ├── views.py
-│ └── context_processors.py
-│
-├── finance/ # App principal de controle financeiro
-│ ├── models.py
-│ ├── views.py
-│ ├── forms.py
-│ ├── admin.py
-│ ├── templates/
-│ └── static/
-│
-├── manage.py
-└── README.md
-
----
-
-## Funcionalidades
-
-- Cadastro de receitas
-- Cadastro de despesas
-- Listagem de lançamentos
-- Interface responsiva com Bootstrap
-- Organização por categorias
-- Integração com Django Admin
-
----
-## Arquitetura
-
- O projeto segue a arquitetura MTV (Model-Template-View) do Django, 
- com separação clara entre regras de negócio, camada de apresentação e configuração do sistema.
-
----
-
-## Screenshots
-
-### Tela de Login
-![Tela de Login](assets/images/login.png)
-
-### Cadastro de Usuários
-![Cadastro de Usuários](assets/images/cadastre-se.png)
-
-### Dashboard
-![Dashboard](assets/images/dash.png)
-
-### Cadastro de Lançamentos
-![Cadastro de Lançamentos](assets/images/addItem.png)
-
----
-
-## Como Executar o Projeto
-
-### 1 Clone o repositório
-git clone https://github.com/jmattosinfo/finance-control.git
-
-
-### 2️ Acesse a pasta do projeto
-cd FINANCE_CONTROL
-
-
-### 3️ Crie e ative o ambiente virtual
-python -m venv venv
-venv\Scripts\activate # Windows
-
-### 4️ Instale as dependências
-pip install -r requirements.txt
-
-### 5️ Execute as migrações
-python manage.py migrate
-
-### 6️ Rode o servidor
-python manage.py runserver
-
-Acesse no navegador: http://127.0.0.1:8000/
-
----
-
-## Objetivo do Projeto
-
-Este projeto foi desenvolvido com foco em:
-
-- Aprendizado prático de Django
-- Estruturação de aplicações seguindo o padrão MTV do Django
-- Organização de apps e templates
-- Boas práticas de desenvolvimento web
-
----
-
-## 📈 Melhorias Futuras
-
-- Implementação de API REST com Django REST Framework
-- Autenticação de usuários
-- Dashboard com gráficos financeiros
-- Migração para arquitetura Java + Spring Boot + React
-
----
-
-## 👨‍💻 Autor
-
-Julio César de Mattos Vieira  
-Desenvolvedor em formação
-
----
+├── core/           # Kernel do sistema (Settings, URLs globais)
+├── finance/        # Business Logic (Models, Views de processamento, Forms)
+├── templates/      # Camada de apresentação com Herança de Templates (DRY)
+└── static/         # Assets estáticos (Custom CSS, JS, Imagens)
