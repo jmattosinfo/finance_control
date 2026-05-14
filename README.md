@@ -68,25 +68,25 @@ FINANCE_CONTROL/
 **Siga os passos abaixo para configurar o ambiente de desenvolvimento localmente:**
 
 **1. Clonagem e Ambiente**
-
+```text
 git clone [https://github.com/jmattosinfo/finance-control.git](https://github.com/jmattosinfo/finance-control.git)
 cd FINANCE_CONTROL
 python -m venv venv
-
-# Ativação Windows:
+```
+### Ativação Windows:
 venv\Scripts\activate
-# Ativação Linux/Mac:
+### Ativação Linux/Mac:
 source venv/bin/activate
 
 **2. Instalação e Setup**
 
-# Instala as dependências (Django, DRF, CORS-headers)
+### Instala as dependências (Django, DRF, CORS-headers)
 pip install -r requirements.txt
 
-# Executa as migrações do banco de dados
+### Executa as migrações do banco de dados
 python manage.py migrate
 
-# Inicia o servidor
+### Inicia o servidor
 python manage.py runserver
 
 O sistema estará disponível em: http://127.0.0.1:8000/
