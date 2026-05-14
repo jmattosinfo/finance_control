@@ -4,6 +4,14 @@ Sistema web de alta performance para gerenciamento financeiro pessoal, desenvolv
 
 ---
 
+## 🎬 Demonstração em Tempo Real
+
+Aqui você pode observar o fluxo de funcionamento do sistema, incluindo a abertura de modais dinâmicos e a renderização de gráficos:
+
+![Demonstração do Sistema](assets/gifs/cadastroTransacao.gif)
+
+---
+
 ## 🚀 Diferenciais e Autoridade Técnica
 
 Diferente de sistemas básicos, este projeto implementa:
@@ -14,11 +22,11 @@ Diferente de sistemas básicos, este projeto implementa:
 
 ---
 
-## 📸 Demonstração e Interface
+## 📸 Interface e visualização
 
 | Dashboard Mensal | Análise com Gráficos |
 | :---: | :---: |
-| ![Dashboard](assets/images/dash.png) | ![Gráficos]("assets/images/relatorioEmGrafico.png") |
+| ![Dashboard](assets/images/dash.png) | ![Gráficos]("assets/images/grafico.png") |
 
 | Gestão de Lançamentos | Edição e Exclusão |
 | :---: | :---: |
