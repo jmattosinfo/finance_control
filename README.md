@@ -18,11 +18,11 @@ Diferente de sistemas básicos, este projeto implementa:
 
 | Dashboard Mensal | Análise com Gráficos |
 | :---: | :---: |
-| ![Dashboard](assets/images/dash.png) | ![Gráficos](assets/images/grafico.png) |
+| ![Dashboard](assets/images/dash.png) | ![Gráficos]("assets/images/relatorioEmGrafico.png") |
 
 | Gestão de Lançamentos | Edição e Exclusão |
 | :---: | :---: |
-| ![Cadastro](assets/images/addItem.png) | ![Edição](assets/images/editar.png) |
+| ![Cadastro](assets/images/novaTransacao.png) | ![Edição](assets/images/editarItem.png) |
 
 ---
 
