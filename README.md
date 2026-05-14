@@ -74,21 +74,27 @@ cd FINANCE_CONTROL
 python -m venv venv
 ```
 ### Ativação Windows:
-venv\Scripts\activate
+```text 
+venv\Scripts\activate 
+```
 ### Ativação Linux/Mac:
+```text
 source venv/bin/activate
-
+```
 **2. Instalação e Setup**
 
 ### Instala as dependências (Django, DRF, CORS-headers)
+```text
 pip install -r requirements.txt
-
+```
 ### Executa as migrações do banco de dados
+```text
 python manage.py migrate
-
+```
 ### Inicia o servidor
+```text
 python manage.py runserver
-
+```
 O sistema estará disponível em: http://127.0.0.1:8000/
 
 A API REST estará disponível em: http://127.0.0.1:8000/api/transacoes/
