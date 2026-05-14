@@ -12,6 +12,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.http import require_http_methods
 from django.db.models import Sum
 from decimal import Decimal
+from rest_framework.decorators import api_view  # Para criar uma API simples usando Django REST Framework
+from rest_framework.response import Response  #Resposta para APIs
+from .serializers import TransacaoSerializer  # Importando o serializer para Transacao
+
 
 MESES_PT = [
     '', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -42,7 +46,7 @@ def mes_atual(request, ano=None, mes=None):
         mes_anterior, ano_anterior = mes - 1, ano
         mes_proximo, ano_proximo = mes + 1, ano
 
-    # --- SALDO MÊS ANTERIOR (Sua planilha: "Saldo Mês Anterior") ---
+    # --- SALDO MÊS ANTERIOR ---
     transacoes_passadas = Transacao.objects.filter(
         user=request.user, 
         data__year=ano_anterior, 
@@ -124,7 +128,7 @@ def excluir_transacao(request, transacao_id):
     messages.success(request, "Transação excluída.")
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
-# --- VIEWS DE AUTENTICAÇÃO E PERFIL (MANTIDAS) ---
+# --- VIEWS DE AUTENTICAÇÃO E PERFIL ---
 def login_view(request):
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
@@ -213,9 +217,9 @@ def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
         "total_saidas": saidas,
         "total_guardar": guardar,
         
-        "total_prev_entradas": Decimal(0),  # Substitua pelo valor previsto de entradas
-        "total_prev_saidas": Decimal(0),  # Substitua pelo valor previsto de saídas
-        "total_prev_guardar": Decimal(0),  # Substitua pelo valor previsto de guardar
+        "total_prev_entradas": Decimal(0),  # Substitui pelo valor previsto de entradas
+        "total_prev_saidas": Decimal(0),  # Substitui pelo valor previsto de saídas
+        "total_prev_guardar": Decimal(0),  # Substitui pelo valor previsto de guardar
        
     }
     return render(request, "finance/grafico_mes.html", context)
@@ -225,4 +229,3 @@ def teste_context_processor(request):
 
 def excluir_conta(request):
     return render(request, 'finance/excluir_conta.html')
-# Outras views (sobre, listar_usuarios, etc) permanecem as mesmas.

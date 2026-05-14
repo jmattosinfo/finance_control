@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'finance',
+    'finance', #app principal do projeto, onde estão os modelos, views e templates relacionados às transações financeiras.
     "crispy_forms",
     "crispy_bootstrap5",
+    'rest_framework',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
