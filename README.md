@@ -59,6 +59,10 @@ FINANCE_CONTROL/
 ├── manage.py       # Utilitário de linha de comando do Django
 └── requirements.txt # Gerenciamento de dependências
 
+```
+
+---
+
 ## ⚙️ Engenharia de Execução (Instruções)
 
 **Siga os passos abaixo para configurar o ambiente de desenvolvimento localmente:**
@@ -91,15 +95,15 @@ A API REST estará disponível em: http://127.0.0.1:8000/api/transacoes/
 
 ## 📈 Roadmap de Evolução
 
-[x] Dashboard dinâmico com integração de Gráficos (Chart.js).
+- [x] Dashboard dinâmico com integração de Gráficos (Chart.js).
 
-[x] Implementação de API REST com Django REST Framework (DRF).
+- [x] Implementação de API REST com Django REST Framework (DRF).
 
-[ ] Implementação de autenticação via Token/JWT.
+- [ ] Implementação de autenticação via Token/JWT.
 
-[ ] Containerização com Docker.
+- [ ] Containerização com Docker.
 
-[ ] Migração planejada para backend em Java Spring Boot.
+- [ ] Migração planejada para backend em Java Spring Boot.
 
 ### 👨‍💻 Autor
 Julio César de Mattos Vieira
