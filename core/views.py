@@ -14,7 +14,7 @@ from django.db.models import Sum
 from decimal import Decimal
 from rest_framework.decorators import api_view  # Para criar uma API simples usando Django REST Framework
 from rest_framework.response import Response  #Resposta para APIs
-from .serializers import TransacaoSerializer  # Importando o serializer para Transacao
+from finance.serializers import TransacaoSerializer  # Importando o serializer para Transacao
 
 
 MESES_PT = [
