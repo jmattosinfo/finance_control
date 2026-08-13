@@ -26,47 +26,43 @@ class TransacaoForm(forms.ModelForm):
         self.fields['membro'].empty_label = "Selecione o Responsável"
         
 class MembroForm(forms.ModelForm):
-            class Meta:
-                model = Membro
-                fields = ['nome']
-                widgets = {
-                    'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: JC, KW, Filho...'})
+    class Meta:
+        model = Membro
+        fields = ['nome']
+        widgets = {
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: JC, KW, Filho...'})
         }
-        
+
+
 class CadastroForm(UserCreationForm):
-        
-        email = forms.EmailField(
-            required=True, 
-           widget=forms.EmailInput(
-               attrs={                  
-                    'placeholder': 'Email'
-                      }
-                )
-            )
-            
-class Meta: #class Meta define metadados para o formulário, fazendo a ligação com o modelo User do Django.
-            model = User
-            fields = ['username', 'password1', 'password2']
-            
-            help_texts = {
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                'placeholder': 'Email'
+            }
+        )
+    )
+
+    class Meta:  # class Meta define metadados para o formulário, fazendo a ligação com o modelo User do Django.
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+        help_texts = {
             'username': None,
             'email': None,
             'password1': None,
             'password2': None,
         }
-        
-            def __init__(self, *args, **kwargs):
-                super(CadastroForm, self).__init__(*args, **kwargs)
-                for field_name, field in self.fields.items():
-                    field.widget.attrs.update({'class': 'form-control'}) #adiciona a classe CSS 'form-control' a todos os campos do formulário
-                
 
-                
-                    self.fields['username'].widget.attrs['placeholder'] = 'Nome de usuário'
-                    self.fields['password1'].widget.attrs['placeholder'] = 'Crie uma senha'
-                    self.fields['password2'].widget.attrs['placeholder'] = 'Confirme a senha'
-            
-        
+    def __init__(self, *args, **kwargs):
+        super(CadastroForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})  # adiciona a classe CSS 'form-control' a todos os campos
+
+        self.fields['username'].widget.attrs['placeholder'] = 'Nome de usuário'
+        self.fields['password1'].widget.attrs['placeholder'] = 'Crie uma senha'
+        self.fields['password2'].widget.attrs['placeholder'] = 'Confirme a senha'
 class EditarContaForm(PasswordChangeForm):
     username = forms.CharField(
         required=True,

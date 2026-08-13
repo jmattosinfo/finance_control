@@ -177,17 +177,33 @@ def mes_atual_padrao(request):
 def sobre(request):
     return render(request, "finance/sobre.html")
 
+@user_passes_test(lambda u: u.is_superuser, login_url='login')
 def listar_usuarios(request):
     usuarios = User.objects.all()
     return render(request, 'finance/listar_usuarios.html', {'usuarios': usuarios})
 
+@login_required
 def listar_transacoes(request):
-    return render(request, "finance/listar_transacoes.html")
+    transacoes = Transacao.objects.filter(user=request.user).order_by('-data')
+    return render(request, "finance/listar_transacoes.html", {'transacoes': transacoes})
 
+@login_required
 def editar_transacao(request, transacao_id):
-    return redirect('home')
+    transacao = get_object_or_404(Transacao, id=transacao_id, user=request.user)
+
+    if request.method == "POST":
+        form = TransacaoForm(request.user, request.POST, instance=transacao)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Transação atualizada com sucesso!")
+            return redirect('mes_atual', ano=transacao.data.year, mes=transacao.data.month)
+    else:
+        form = TransacaoForm(request.user, instance=transacao)
+
+    return render(request, "finance/editar_transacao.html", {"form": form, "transacao": transacao})
 
 
+@login_required
 def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
             
     mes_anterior = mes - 1 if mes > 1 else 12
@@ -198,7 +214,7 @@ def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
     
     from decimal import Decimal
     
-    transacoes = Transacao.objects.filter(data__year=ano, data__month=mes)    
+    transacoes = Transacao.objects.filter(user=request.user, data__year=ano, data__month=mes)
     entradas = transacoes.filter(categoria__iexact="receita").aggregate(Sum("valor"))["valor__sum"] or 0
     saidas = transacoes.filter(categoria__iexact="despesa").aggregate(Sum("valor"))["valor__sum"] or 0
     guardar = entradas - saidas
@@ -227,5 +243,18 @@ def grafico_mes(request, ano, mes): # calcular mês anterior e próximo
 def teste_context_processor(request):
     return render(request, "finance/teste_context.html")
 
+@login_required
 def excluir_conta(request):
+    if request.method == "POST":
+        username = request.POST.get("confirmar_username", "")
+        if username == request.user.username:
+            user = request.user
+            logout(request)
+            user.delete()
+            messages.success(request, "Sua conta foi excluída com sucesso. Até logo!")
+            return redirect("home")
+        else:
+            messages.error(request, "O nome de usuário digitado não confere. A conta não foi excluída.")
+            return redirect("excluir_conta")
+
     return render(request, 'finance/excluir_conta.html')

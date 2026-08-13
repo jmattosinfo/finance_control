@@ -1,0 +1,461 @@
+/* =====================================================================
+   KW Controle Financeiro — Sistema de Temas
+   ---------------------------------------------------------------------
+   Paleta baseada em tons de verde. As cores são centralizadas em CSS
+   custom properties definidas em `:root` (tema claro / padrão) e
+   redefinidas em `[data-theme="dark"]` (tema escuro).
+
+   A alternância é feita pela função `darkTheme` (em
+   finance/static/finance/js/theme.js), que aplica/remove o atributo
+   `data-theme="dark"` no elemento <html>, persiste a escolha do usuário
+   no localStorage e respeita `prefers-color-scheme` quando não há
+   preferência salva.
+   ===================================================================== */
+
+/* ---------- Paleta de verdes (design system) ---------- */
+:root {
+  --verde-50:  #e8f7ef;
+  --verde-100: #d1fae5;
+  --verde-200: #a7f3d0;
+  --verde-300: #6ee7b7;
+  --verde-400: #34d399;
+  --verde-500: #10b981;
+  --verde-600: #059669;
+  --verde-700: #047857;
+  --verde-800: #065f46;
+  --verde-900: #064e2e;
+  --verde-950: #052e16;
+}
+
+/* =====================================================================
+   TEMA CLARO (padrão)
+   ===================================================================== */
+:root {
+  color-scheme: light;
+
+  /* Fundo e superfícies */
+  --bg-body: #f2f7f4;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #eaf3ee;
+  --bg-input: #ffffff;
+  --bg-hover: rgba(4, 120, 87, 0.07);
+  --bg-active: rgba(4, 120, 87, 0.14);
+
+  /* Texto */
+  --text-body: #212529;
+  --text-secondary: #495057;
+  --text-muted: #67786f;
+  --text-on-primary: #ffffff;
+
+  /* Bordas */
+  --border-color: #d8e2db;
+  --border-strong: #b6c4bc;
+  --border-focus: #198754;
+  --focus-ring: rgba(25, 135, 84, 0.18);
+
+  /* Acentos */
+  --primary: #047857;
+  --primary-hover: #065f46;
+  --primary-active: #059669;
+  --success: #059669;
+  --danger: #c0392b;
+  --warning: #f39c12;
+  --info: #2980b9;
+
+  /* Navbar */
+  --navbar-bg: #064e2e;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(6, 46, 34, 0.08);
+  --shadow: 0 4px 12px rgba(6, 46, 34, 0.08);
+  --shadow-lg: 0 8px 20px rgba(6, 46, 34, 0.10);
+
+  /* Componentes */
+  --table-head-bg: #eaf3ee;
+  --modal-header-bg: #f2f7f4;
+
+  /* Bootstrap — tema claro */
+  --bs-primary: #047857;
+  --bs-primary-rgb: 4, 120, 87;
+  --bs-success: #059669;
+  --bs-success-rgb: 5, 150, 105;
+  --bs-danger: #c0392b;
+  --bs-danger-rgb: 192, 57, 43;
+  --bs-info: #2980b9;
+  --bs-info-rgb: 41, 128, 185;
+  --bs-warning: #f39c12;
+  --bs-warning-rgb: 243, 156, 18;
+  --bs-body-bg: #f2f7f4;
+  --bs-body-bg-rgb: 242, 247, 244;
+  --bs-body-color: #212529;
+  --bs-body-color-rgb: 33, 37, 41;
+  --bs-secondary-color: #67786f;
+  --bs-secondary-color-rgb: 103, 120, 111;
+  --bs-border-color: #d8e2db;
+  --bs-border-color-translucent: rgba(0, 0, 0, 0.12);
+  --bs-card-bg: #ffffff;
+  --bs-card-color: #212529;
+  --bs-card-border-color: rgba(0, 0, 0, 0.12);
+  --bs-modal-bg: #ffffff;
+  --bs-modal-color: #212529;
+  --bs-modal-border-color: rgba(0, 0, 0, 0.15);
+  --bs-heading-color: #212529;
+  --bs-link-color: #047857;
+  --bs-link-color-rgb: 4, 120, 87;
+  --bs-link-hover-color: #065f46;
+  --bs-link-hover-color-rgb: 6, 95, 70;
+  --bs-focus-ring-color: rgba(4, 120, 87, 0.25);
+
+  --bs-light-rgb: 248, 250, 248;
+  --bs-dark-rgb: 33, 37, 41;
+  --bs-white-rgb: 255, 255, 255;
+  --bs-black-rgb: 0, 0, 0;
+
+  --bs-light-text-emphasis: #495057;
+  --bs-dark-text-emphasis: #212529;
+  --bs-primary-text-emphasis: #04381f;
+  --bs-primary-bg-subtle: #d1fae5;
+  --bs-primary-border-subtle: #a7f3d0;
+  --bs-success-text-emphasis: #065f46;
+  --bs-success-bg-subtle: #d1fae5;
+  --bs-success-border-subtle: #a7f3d0;
+  --bs-danger-text-emphasis: #7f2318;
+  --bs-danger-bg-subtle: #fbe4e1;
+  --bs-danger-border-subtle: #f2c1ba;
+  --bs-warning-text-emphasis: #8a6205;
+  --bs-warning-bg-subtle: #fef0d6;
+  --bs-warning-border-subtle: #fcd9a0;
+  --bs-info-text-emphasis: #15587f;
+  --bs-info-bg-subtle: #d9ecf7;
+  --bs-info-border-subtle: #b3d9ef;
+  --bs-secondary-text-emphasis: #495057;
+  --bs-secondary-bg: #e9ecef;
+  --bs-secondary-bg-rgb: 233, 236, 239;
+  --bs-tertiary-bg: #f8f9fa;
+  --bs-tertiary-bg-rgb: 248, 249, 250;
+
+  --bs-table-color: #212529;
+  --bs-table-bg: transparent;
+  --bs-table-border-color: #d8e2db;
+  --bs-table-striped-color: #212529;
+  --bs-table-striped-bg: rgba(4, 120, 87, 0.04);
+  --bs-table-hover-color: #212529;
+  --bs-table-hover-bg: rgba(4, 120, 87, 0.06);
+}
+
+/* =====================================================================
+   TEMA ESCURO — tons escuros de verde
+   ===================================================================== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Fundo e superfícies (verdes profundos, quase pretos) */
+  --bg-body: #06100a;
+  --bg-surface: #0c1c12;
+  --bg-surface-2: #132a1c;
+  --bg-input: #09150d;
+  --bg-hover: rgba(52, 211, 153, 0.10);
+  --bg-active: rgba(52, 211, 153, 0.22);
+
+  /* Texto (claros com leve tom esverdeado) */
+  --text-body: #e7f3ec;
+  --text-secondary: #c0d6c9;
+  --text-muted: #9db8aa;
+  --text-on-primary: #ffffff;
+
+  /* Bordas */
+  --border-color: #1d3b2a;
+  --border-strong: #2b5240;
+  --border-focus: #34d399;
+  --focus-ring: rgba(52, 211, 153, 0.25);
+
+  /* Acentos (verdes claros para contraste sobre fundo escuro) */
+  --primary: #34d399;
+  --primary-hover: #6ee7b7;
+  --primary-active: #10b981;
+  --primary-solid: #059669;
+  --primary-solid-hover: #10b981;
+  --primary-solid-active: #047857;
+  --success: #4ade80;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --info: #38bdf8;
+
+  /* Navbar */
+  --navbar-bg: #04210f;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.55);
+
+  /* Componentes */
+  --table-head-bg: #132a1c;
+  --modal-header-bg: #132a1c;
+
+  /* Bootstrap — tema escuro */
+  --bs-primary: #34d399;
+  --bs-primary-rgb: 52, 211, 153;
+  --bs-success: #4ade80;
+  --bs-success-rgb: 74, 222, 128;
+  --bs-danger: #f87171;
+  --bs-danger-rgb: 248, 113, 113;
+  --bs-info: #38bdf8;
+  --bs-info-rgb: 56, 189, 248;
+  --bs-warning: #fbbf24;
+  --bs-warning-rgb: 251, 191, 36;
+  --bs-body-bg: #06100a;
+  --bs-body-bg-rgb: 6, 16, 10;
+  --bs-body-color: #e7f3ec;
+  --bs-body-color-rgb: 231, 243, 236;
+  --bs-secondary-color: #9db8aa;
+  --bs-secondary-color-rgb: 157, 184, 170;
+  --bs-border-color: #1d3b2a;
+  --bs-border-color-translucent: rgba(255, 255, 255, 0.10);
+  --bs-card-bg: #0c1c12;
+  --bs-card-color: #e7f3ec;
+  --bs-card-border-color: #1d3b2a;
+  --bs-modal-bg: #0c1c12;
+  --bs-modal-color: #e7f3ec;
+  --bs-modal-border-color: #1d3b2a;
+  --bs-heading-color: #f0faf4;
+  --bs-link-color: #6ee7b7;
+  --bs-link-color-rgb: 110, 231, 183;
+  --bs-link-hover-color: #a7f3d0;
+  --bs-link-hover-color-rgb: 167, 243, 208;
+  --bs-focus-ring-color: rgba(52, 211, 153, 0.30);
+
+  --bs-light-rgb: 19, 42, 28;
+  --bs-dark-rgb: 231, 243, 236;
+  --bs-white-rgb: 255, 255, 255;
+  --bs-black-rgb: 0, 0, 0;
+
+  --bs-light-text-emphasis: #c0d6c9;
+  --bs-dark-text-emphasis: #e7f3ec;
+  --bs-primary-text-emphasis: #a7f3d0;
+  --bs-primary-bg-subtle: #12271b;
+  --bs-primary-border-subtle: #2f5f45;
+  --bs-success-text-emphasis: #86efac;
+  --bs-success-bg-subtle: #10261a;
+  --bs-success-border-subtle: #2f5f45;
+  --bs-danger-text-emphasis: #fca5a5;
+  --bs-danger-bg-subtle: #2c1613;
+  --bs-danger-border-subtle: #6b2a24;
+  --bs-warning-text-emphasis: #fcd34d;
+  --bs-warning-bg-subtle: #2b2210;
+  --bs-warning-border-subtle: #6b5424;
+  --bs-info-text-emphasis: #7dd3fc;
+  --bs-info-bg-subtle: #122333;
+  --bs-info-border-subtle: #2b526e;
+  --bs-secondary-text-emphasis: #c0d6c9;
+  --bs-secondary-bg: #132a1c;
+  --bs-secondary-bg-rgb: 19, 42, 28;
+  --bs-tertiary-bg: #0c1c12;
+  --bs-tertiary-bg-rgb: 12, 28, 18;
+
+  --bs-table-color: #e7f3ec;
+  --bs-table-bg: #0c1c12;
+  --bs-table-border-color: #1d3b2a;
+  --bs-table-striped-color: #e7f3ec;
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+  --bs-table-hover-color: #e7f3ec;
+  --bs-table-hover-bg: rgba(52, 211, 153, 0.08);
+}
+
+/* =====================================================================
+   COMPONENTES (usam custom properties nos dois temas)
+   ===================================================================== */
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-body);
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Navbar */
+.bg-custom-navbar,
+.navbar-custom {
+  background-color: var(--navbar-bg) !important;
+  transition: background-color 0.25s ease;
+}
+.navbar-custom {
+  color: var(--text-on-primary);
+  padding: 0.7rem 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Links */
+a { color: var(--bs-link-color); }
+a:hover { color: var(--bs-link-hover-color); }
+
+/* Cards */
+.card {
+  background-color: var(--bg-surface);
+  color: var(--text-body);
+  border-color: var(--border-color);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.card-header { background-color: var(--bg-surface-2); border-bottom-color: var(--border-color); }
+.card-body { color: var(--text-body); }
+.card-footer { background-color: var(--bg-surface-2); border-top-color: var(--border-color); }
+.card-summary {
+  border: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.25s ease;
+}
+.card-summary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--bg-surface-2);
+}
+.main-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-surface);
+  color: var(--text-body);
+  padding: 1.5rem;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Tabelas */
+.table {
+  --bs-table-color: var(--text-body);
+  --bs-table-border-color: var(--border-color);
+  color: var(--bs-table-color);
+}
+.table thead { background-color: var(--table-head-bg); }
+.table thead th {
+  color: var(--text-muted);
+  border-bottom-color: var(--border-color) !important;
+}
+.table tbody tr { color: var(--text-body); }
+
+/* Tabela com cabeçalho "light" no tema escuro */
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light > :not(caption) > * > * {
+  --bs-table-bg: var(--table-head-bg);
+  --bs-table-color: var(--text-body);
+  --bs-table-border-color: var(--border-color);
+  background-color: var(--table-head-bg);
+  color: var(--text-body);
+}
+[data-theme="dark"] .table-light th { color: var(--text-muted) !important; }
+
+/* Modais */
+.modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-body);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.modal-header {
+  background-color: var(--modal-header-bg) !important;
+  border-bottom-color: var(--border-color);
+}
+.modal-header .modal-title { color: var(--text-body); }
+.modal-body { color: var(--text-body); }
+.modal-footer { border-top-color: var(--border-color); }
+[data-theme="dark"] .btn-close { filter: invert(1) grayscale(1) brightness(1.8); }
+
+/* Formulários */
+.form-control,
+.form-select {
+  background-color: var(--bg-input);
+  color: var(--text-body);
+  border-color: var(--border-strong);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--bg-input);
+  color: var(--text-body);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 0.25rem var(--focus-ring);
+}
+.form-control::placeholder { color: var(--text-muted); }
+.form-control[readonly] { background-color: var(--bg-surface-2); }
+.form-label { color: var(--text-body); }
+.form-text { color: var(--text-muted); }
+.input-group-text {
+  background-color: var(--bg-input) !important;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+/* Seta do select no tema escuro (verde claro) */
+[data-theme="dark"] .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23a7f3d0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+[data-theme="dark"] .form-check-input {
+  background-color: var(--bg-input);
+  border-color: var(--border-strong);
+}
+[data-theme="dark"] .form-check-input:checked {
+  background-color: var(--primary-solid);
+  border-color: var(--primary-solid);
+}
+[data-theme="dark"] .form-check-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 0.25rem var(--focus-ring);
+}
+
+/* Botões sólidos no tema escuro — texto branco com contraste adequado */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn-success {
+  --bs-btn-bg: var(--primary-solid);
+  --bs-btn-border-color: var(--primary-solid);
+  --bs-btn-hover-bg: var(--primary-solid-hover);
+  --bs-btn-hover-border-color: var(--primary-solid-hover);
+  --bs-btn-active-bg: var(--primary-solid-active);
+  --bs-btn-active-border-color: var(--primary-solid-active);
+  --bs-btn-color: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-color: #ffffff;
+}
+[data-theme="dark"] .btn-danger {
+  --bs-btn-bg: #b91c1c;
+  --bs-btn-border-color: #b91c1c;
+  --bs-btn-hover-bg: #dc2626;
+  --bs-btn-hover-border-color: #dc2626;
+  --bs-btn-active-bg: #991b1b;
+  --bs-btn-active-border-color: #991b1b;
+  --bs-btn-color: #ffffff;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-active-color: #ffffff;
+}
+[data-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: var(--text-secondary);
+  --bs-btn-border-color: var(--border-strong);
+  --bs-btn-hover-bg: var(--bg-hover);
+  --bs-btn-hover-color: var(--text-body);
+  --bs-btn-hover-border-color: var(--border-focus);
+  --bs-btn-active-bg: var(--bg-active);
+  --bs-btn-active-color: var(--text-body);
+  --bs-btn-active-border-color: var(--border-focus);
+  --bs-btn-disabled-color: var(--text-muted);
+  --bs-btn-disabled-border-color: var(--border-color);
+}
+
+/* Fundo primário no tema escuro — sólido escuro para manter texto branco legível */
+[data-theme="dark"] .bg-primary {
+  background-color: var(--primary-solid) !important;
+}
+
+/* Badges no tema escuro */
+[data-theme="dark"] .badge.bg-primary {
+  background-color: var(--primary-solid) !important;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .badge.bg-info {
+  background-color: var(--bs-info-bg-subtle) !important;
+  color: var(--bs-info-text-emphasis) !important;
+}
+
+/* Utilidades no tema escuro */
+[data-theme="dark"] .bg-white {
+  background-color: var(--bg-surface) !important;
+}
+[data-theme="dark"] .shadow-sm { box-shadow: var(--shadow-sm) !important; }
+[data-theme="dark"] .shadow { box-shadow: var(--shadow) !important; }
+[data-theme="dark"] .shadow-lg { box-shadow: var(--shadow-lg) !important; }

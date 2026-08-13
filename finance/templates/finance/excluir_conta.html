@@ -1,13 +1,36 @@
 {% extends 'finance/base.html' %}
 
 {% block content %}
-<h2>Excluir Conta</h2>
+<div class="container mt-5 px-3" style="max-width: 500px;">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-4 p-md-5 text-center">
+      <div class="bg-danger bg-opacity-10 d-inline-block p-3 rounded-circle mb-3">
+        <i class="fa-solid fa-triangle-exclamation fa-2x text-danger"></i>
+      </div>
+      <h3 class="fw-bold">Excluir Conta</h3>
+      <p class="text-muted small">
+        Tem certeza que deseja excluir sua conta? Essa ação é <strong>irreversível</strong> e removerá todas as suas transações, previsões e membros cadastrados.
+      </p>
 
-<p>Tem certeza que deseja excluir sua conta? Essa ação é irreversível.</p>
+      <p class="text-muted small">
+        Para confirmar, digite seu nome de usuário: <strong>{{ user.username }}</strong>
+      </p>
 
-<form method="POST">
-    {% csrf_token %}
-    <button class="btn btn-danger" type="submit">Sim</button>
-    <a href="{% url 'login' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" name="confirmar_username" class="form-control text-center" placeholder="Digite seu nome de usuário" required autocomplete="off" />
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm" type="submit">
+            <i class="fa-solid fa-trash-can me-2"></i>Sim, excluir minha conta
+          </button>
+          <a href="{% url 'editar_conta' %}" class="btn btn-link text-decoration-none text-muted small">
+            <i class="fa-solid fa-chevron-left me-1"></i> Cancelar e voltar
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

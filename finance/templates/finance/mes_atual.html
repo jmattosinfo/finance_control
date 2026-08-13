@@ -10,65 +10,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-      :root {
-        --bs-primary: #2c3e50;
-        --bs-success: #27ae60;
-        --bs-danger: #c0392b;
-        --bs-info: #2980b9;
-      }
-      body {
-        background-color: #f8f9fa;
-        font-family: 'Segoe UI', sans-serif;
-      }
-      .navbar-custom {
-        background-color: var(--bs-primary);
-        color: white;
-        padding: 0.7rem 1rem;
-        margin-bottom: 2rem;
-      }
-      .card-summary {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s;
-      }
-      .card-summary:hover {
-        transform: translateY(-3px);
-      }
-      .main-card {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        background: white;
-        padding: 1.5rem;
-      }
-      .table thead {
-        background-color: #f1f3f5;
-      }
-    </style>
+    <link rel="stylesheet" href="{% static 'finance/css/theme.css' %}" />
+    <script src="{% static 'finance/js/theme.js' %}"></script>
   </head>
   <body>
     <nav class="navbar navbar-custom shadow-sm">
-      <div class="container">
-        <span class="navbar-brand mb-0 h1 text-white"><i class="fa-solid fa-wallet me-2"></i>Finance Control</span>
-        <div class="d-flex align-items-center gap-3">
-          <span class="small opacity-75">Olá, <strong>{{ user.username }}</strong></span>
-          <a href="{% url 'editar_conta' %}" class="btn btn-sm btn-outline-light"><i class="fa-solid fa-user-gear"></i> Perfil</a>
+      <div class="container flex-wrap flex-lg-nowrap gap-2">
+        <span class="navbar-brand mb-0 h1 text-white small d-none d-sm-inline"><i class="fa-solid fa-wallet me-2"></i>KW Controle Financeiro</span>
+        <span class="navbar-brand mb-0 h1 text-white small d-sm-none"><i class="fa-solid fa-wallet me-2"></i>KW</span>
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <button type="button" class="btn btn-sm btn-outline-light border-0" data-theme-toggle title="Alternar tema" aria-label="Alternar tema" aria-pressed="false">
+            <i class="fa-solid fa-moon" data-theme-icon="moon"></i>
+            <i class="fa-solid fa-sun d-none" data-theme-icon="sun"></i>
+          </button>
+          <span class="small opacity-75 d-none d-md-inline">Olá, <strong>{{ user.username }}</strong></span>
+          <a href="{% url 'editar_conta' %}" class="btn btn-sm btn-outline-light" title="Perfil"><i class="fa-solid fa-user-gear"></i> <span class="d-none d-sm-inline">Perfil</span></a>
           <form action="{% url 'logout' %}" method="post" class="d-inline">
             {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm"><i class="fa-solid fa-right-from-bracket"></i> <span class="d-none d-sm-inline">Sair</span></button>
           </form>
         </div>
       </div>
     </nav>
 
     <div class="container">
-      <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-4 shadow-sm">
-        <a href="{% url 'mes_atual' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary rounded-pill"><i class="fa-solid fa-chevron-left"></i> {{ mes_anterior_nome }}</a>
-        <h2 class="h4 m-0 fw-bold">{{ mes_nome }} <span class="text-muted fw-light">{{ ano }}</span></h2>
-        <a href="{% url 'mes_atual' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary rounded-pill">{{ mes_proximo_nome }} <i class="fa-solid fa-chevron-right"></i></a>
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 bg-white p-3 rounded-4 shadow-sm">
+        <a href="{% url 'mes_atual' ano=ano_anterior mes=mes_anterior %}" class="btn btn-outline-primary rounded-pill btn-sm"><i class="fa-solid fa-chevron-left"></i> <span class="d-none d-sm-inline">{{ mes_anterior_nome }}</span></a>
+        <h2 class="h5 m-0 fw-bold order-first order-sm-0 w-100 w-sm-auto text-center">{{ mes_nome }} <span class="text-muted fw-light">{{ ano }}</span></h2>
+        <a href="{% url 'mes_atual' ano=ano_proximo mes=mes_proximo %}" class="btn btn-outline-primary rounded-pill btn-sm"><span class="d-none d-sm-inline">{{ mes_proximo_nome }}</span> <i class="fa-solid fa-chevron-right"></i></a>
       </div>
 
       <div class="row g-3 mb-4 text-center">
@@ -93,11 +62,11 @@
       </div>
 
       <div class="main-card mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
           <h4 class="m-0 fw-bold text-dark"><i class="fa-solid fa-list-ul me-2 text-primary"></i>Transações</h4>
-          <div class="d-flex gap-2">
-            <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#modalGrafico"><i class="fa-solid fa-chart-line"></i> Gráfico</button>
-            <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#modalNovaTransacao"><i class="fa-solid fa-plus"></i> Nova Transação</button>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-sm btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#modalGrafico"><i class="fa-solid fa-chart-line"></i> Gráfico</button>
+            <button type="button" class="btn btn-sm btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#modalNovaTransacao"><i class="fa-solid fa-plus"></i> Nova Transação</button>
           </div>
         </div>
 
@@ -276,6 +245,10 @@
           chartInstance.destroy();
         }
 
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const chartText = isDark ? '#c0d6c9' : '#495057';
+        const chartBorder = isDark ? '#0c1c12' : '#ffffff';
+
         chartInstance = new Chart(ctx, {
           type: 'doughnut',
           data: {
@@ -285,14 +258,14 @@
                 label: 'Realizado',
                 // Usando as variáveis que o Django envia para a página
                 data: [
-                  {{ total_entradas|default:0|stringformat:".2f" }}, 
-                  {{ total_saidas|default:0|stringformat:".2f" }}, 
+                  {{ total_entradas|default:0|stringformat:".2f" }},
+                  {{ total_saidas|default:0|stringformat:".2f" }},
                   {{ total_bruto|default:0|stringformat:".2f" }}
                 ],
                 backgroundColor: ['#27ae60', '#c0392b', '#2c3e50'],
                 hoverOffset: 15,
                 borderWidth: 2,
-                borderColor: '#ffffff'
+                borderColor: chartBorder
               }
             ]
           },
@@ -303,7 +276,7 @@
             plugins: {
               legend: {
                 position: 'bottom',
-                labels: { usePointStyle: true, padding: 20 }
+                labels: { usePointStyle: true, padding: 20, color: chartText }
               }
             }
           }

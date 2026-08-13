@@ -20,10 +20,10 @@ urlpatterns = [
     path("cadastro/", views.cadastro_view, name="cadastro"),
     
     # recuperação de senha
-    path("senha/reset/", auth_views.PasswordResetView.as_view(template_name='finance/password_reset.html'), name="password_reset"),
-    path('senha/reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='finance/password_reset_done.html'), name='password_reset_done'),
-    path('senha/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='finance/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('senha/reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='finance/password_reset_complete.html'), name='password_reset_complete'),
+    path("senha/reset/", auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name="password_reset"),
+    path('senha/reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
+    path('senha/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('senha/reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
     
     # conta
     path('editar_conta/', views.editar_conta, name='editar_conta'),

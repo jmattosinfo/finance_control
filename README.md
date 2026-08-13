@@ -1,4 +1,4 @@
-# 💰 Finance Control - Gestão Financeira Inteligente
+Agora faça o processo de commit# 💰 KW Controle Financeiro - Gestão Financeira Inteligente
 
 Sistema web de alta performance para gerenciamento financeiro pessoal, desenvolvido com **Django**. O projeto soluciona a organização de fluxos de caixa através de uma arquitetura robusta e interface orientada à experiência do usuário (UX).
 
@@ -19,6 +19,7 @@ Diferente de sistemas básicos, este projeto implementa:
 - **Django REST Framework (DRF):** Implementação de API para interoperabilidade, permitindo a futura integração com ecossistema **Java + Spring Boot** e **React Native**.
 - **Server-Side Rendering (SSR):** Processamento lógico de saldos e filtragem temporal realizado integralmente no backend, entregando um HTML otimizado e seguro ao cliente.
 - **Data Visualization:** Integração estratégica de **JavaScript (Chart.js)** para transformar dados brutos em insights visuais (Entradas vs. Saídas).
+- **Sistema de Temas (Design System Verde):** Paleta baseada em tons de verde, centralizada em CSS custom properties e alternada entre **tema claro/escuro** via `data-theme="dark"`, com persistência da preferência no `localStorage` e respeito à preferência do sistema (`prefers-color-scheme`).
 - **Segurança de Dados:** Implementação de proteção contra ataques CSRF e validação de integridade via Django Forms e ORM.
 
 ---
@@ -38,7 +39,8 @@ Diferente de sistemas básicos, este projeto implementa:
 ## 🛠️ Stack Tecnológica
 
 - **Core:** Python 3.x / Django (Framework Full-stack) / Django REST Framework
-- **Frontend:** Bootstrap 5 (UI/UX Responsivo), FontAwesome (Iconografia)
+- **Frontend:** Bootstrap 5 (UI/UX Responsivo), FontAwesome (Iconografia), CSS customizado com Design System de tons de verde
+- **Theming:** Tema claro/escuro gerenciado por `finance/static/finance/js/theme.js` + `finance/static/finance/css/theme.css`
 - **Database:** SQLite3 (Desenvolvimento) / Preparado para PostgreSQL
 - **Analytics:** Chart.js (Visualização de dados dinâmica)
 
@@ -74,8 +76,8 @@ cd FINANCE_CONTROL
 python -m venv venv
 ```
 ### Ativação Windows:
-```text 
-venv\Scripts\activate 
+```text
+venv\Scripts\activate
 ```
 ### Ativação Linux/Mac:
 ```text
@@ -91,13 +93,50 @@ pip install -r requirements.txt
 ```text
 python manage.py migrate
 ```
-### Inicia o servidor
+### Inicia o servidor (com auto-recarregamento)
 ```text
-python manage.py runserver
+python manage.py runserver 127.0.0.1:8000
 ```
 O sistema estará disponível em: http://127.0.0.1:8000/
 
 A API REST estará disponível em: http://127.0.0.1:8000/api/transacoes/
+
+---
+
+## 🛠️ Solução de Problemas (Troubleshooting)
+
+### ❗ Alterações no CSS/templates não renderizam
+Sintomas: o tema (verde/escuro) ou outras alterações recentes não aparecem mesmo após salvar os arquivos.
+
+Causas mais comuns e soluções:
+
+1. **Servidor iniciado com `--noreload`** — esse modo **nunca recarrega o código**. Se o servidor foi iniciado antes das alterações, ele continuará servindo a versão antiga indefinidamente.
+   - **Solução:** encerre o processo e inicie novamente **sem** a flag `--noreload`:
+     ```text
+     python manage.py runserver 127.0.0.1:8000
+     ```
+
+2. **Múltiplos servidores disputando a mesma porta (8000)** — iniciar `runserver` várias vezes em terminais diferentes deixa vários processos ativos; o navegador pode ser atendido por um servidor "velho".
+   - **Solução:** encerre **todos** os processos `runserver` antes de iniciar um novo:
+     ```text
+     tasklist | findstr python.exe      # identifica os PIDs
+     taskkill /PID <PID> /F /T          # encerra cada processo (e filhos)
+     ```
+   - Depois, inicie **apenas um** servidor.
+
+3. **Cache do navegador** — mesmo com o servidor correto, o navegador pode exibir o CSS antigo em cache.
+   - **Solução:** faça um **hard refresh** com **Ctrl+Shift+R** (Windows/Linux) ou **Cmd+Shift+R** (Mac). Se necessário, limpe o cache do navegador.
+
+4. **Cache de static files do Django (produção)** — em ambiente de produção, use `python manage.py collectstatic` após alterar `finance/static/` e aplique um versionamento de cache (ex.: `ManifestStaticFilesStorage`) para forçar a atualização dos assets.
+
+### ❗ Porta 8000 já em uso
+Outros processos (Docker, WSL, ou outro projeto) podem estar ocupando a porta `8000`.
+- **Solução:** identifique com `netstat -ano | findstr :8000` e, se o processo não for essencial, encerre-o — ou rode o servidor em outra porta:
+  ```text
+  python manage.py runserver 127.0.0.1:8001
+  ```
+
+---
 
 ## 📈 Roadmap de Evolução
 

@@ -83,8 +83,8 @@
       width: 100%;
       padding: 0.5rem 0.75rem;
       font-size: 0.95rem;
-      border: 1px solid #dee2e6; /* Cor de borda mais suave */
-      color: #495057;
+      border: 1px solid var(--border-color); /* Cor de borda mais suave */
+      color: var(--text-body);
     }
     
     /* Comportamento dentro do Grupo (Lado a Lado) */
@@ -103,25 +103,25 @@
     
     /* Ajuste do ícone da Esquerda */
     .input-group-text {
-      background-color: #fff !important;
-      border: 1px solid #dee2e6;
+      background-color: var(--bg-input) !important;
+      border: 1px solid var(--border-color);
       border-right: none; /* REMOVE A BORDA DIREITA DO ÍCONE */
       border-top-left-radius: 0.5rem !important;
       border-bottom-left-radius: 0.5rem !important;
-      color: #adb5bd;
+      color: var(--text-muted);
     }
     
     /* Ajuste do Botão da Direita (Olho) */
     .input-group button {
-      border: 1px solid #dee2e6;
+      border: 1px solid var(--border-color);
       border-left: none; /* REMOVE A BORDA ESQUERDA DO BOTÃO */
       border-top-right-radius: 0.5rem !important;
       border-bottom-right-radius: 0.5rem !important;
-      background-color: #fff;
+      background-color: var(--bg-input);
     }
     
     .input-group > input:last-child {
-      border-right: 1px solid #dee2e6;
+      border-right: 1px solid var(--border-color);
       border-top-right-radius: 0.5rem !important;
       border-bottom-right-radius: 0.5rem !important;
     }
@@ -130,9 +130,9 @@
     input:focus,
     .input-group button:focus {
       z-index: 3;
-      border-color: #198754 !important;
+      border-color: var(--border-focus) !important;
       outline: 0;
-      box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15);
+      box-shadow: 0 0 0 0.25rem var(--focus-ring);
     }
     
     /* Estilo do Card */
